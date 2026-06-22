@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>WhereAt — Office Attendance Tracker</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231F2937'/%3E%3Cellipse cx='16' cy='26' rx='5' ry='1.5' fill='%23C2741F' opacity='.35'/%3E%3Cpath d='M16 4C11.6 4 8 7.6 8 12c0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8z' fill='%23C2741F'/%3E%3Crect x='12' y='10' width='8' height='6' rx='1' fill='%231F2937' opacity='.9'/%3E%3Crect x='13.5' y='11.5' width='2' height='2' rx='.5' fill='%23C2741F'/%3E%3Crect x='16.5' y='11.5' width='2' height='2' rx='.5' fill='%23C2741F'/%3E%3Crect x='14.5' y='13.5' width='3' height='2' rx='.5' fill='%23C2741F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F7F5F0;
+    --paper-raised: #FFFFFF;
+    --ink: #1F2937;
+    --ink-soft: #6B7280;
+    --line: #E3DFD4;
+    --line-strong: #C9C3B3;
+    --wfo: #C2741F;
+    --wfo-bg: #FBF0E2;
+    --wfh: #5B7A99;
+    --wfh-bg: #EAF0F5;
+    --field: #6E5B9E;
+    --field-bg: #EFEAF6;
+    --other: #3F8E8A;
+    --other-bg: #E5F3F2;
+    --leave: #9C8B5E;
+    --leave-bg: #F3EEE0;
+    --pubhol: #B5526B;
+    --pubhol-bg: #FBEAEF;
+    --opthol: #7E96B0;
+    --opthol-bg: #ECF1F5;
+    --alert: #B5432B;
+    --alert-bg: #FCEAE5;
+    --good: #3F7A52;
+    --good-bg: #E9F3EC;
+    --unset: #D8D3C4;
+    --shadow-sm: 0 1px 2px rgba(31,41,55,0.06);
+    --shadow-md: 0 4px 14px rgba(31,41,55,0.08);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  #app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 70px;
+  }
+
+  /* ---------- Header ---------- */
+  header.masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .masthead-title { display: flex; flex-direction: column; gap: 2px; }
+  .product-lockup { display: flex; align-items: center; gap: 11px; }
+  .product-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 8px; }
+  .product-text { display: flex; flex-direction: column; gap: 1px; }
+  .masthead-title .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .masthead-title h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .mandate-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex;
+    gap: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .mandate-chip span b { color: var(--wfo); }
+
+  .user-badge {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--paper-raised); border: 1px solid var(--line-strong);
+    border-radius: 20px; padding: 4px 10px 4px 4px;
+    box-shadow: var(--shadow-sm);
+  }
+  .user-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--wfo); color: #fff;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; letter-spacing: 0.02em;
+  }
+  .user-name {
+    font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap;
+    max-width: 100px; overflow: hidden; text-overflow: ellipsis;
+  }
+  @media (max-width: 480px) {
+    .user-name { display: none; }
+    .user-badge { padding: 4px; }
+  }
+
+  .icon-btn {
+    border: 1px solid var(--line-strong);
+    background: var(--paper-raised);
+    border-radius: 6px;
+    padding: 7px 10px;
+    cursor: pointer;
+    font-size: 11.5px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.15s, color 0.15s;
+  }
+  .icon-btn:hover { background: #EFEBE0; color: var(--ink); }
+  .icon-btn.active-toggle { background: var(--ink); color: var(--paper-raised); border-color: var(--ink); }
+  .icon-btn.active-toggle:hover { background: #374151; }
+
+  /* ---------- Quirky banner ---------- */
+  .quip-banner {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--paper-raised);
+    border: 1px dashed var(--line-strong);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    line-height: 1.4;
+  }
+  .quip-banner .quip-glyph { flex-shrink: 0; }
+
+  /* ---------- Alerts ---------- */
+  #alerts { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+  .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    border: 1px solid;
+    animation: slideIn 0.25s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform: translateY(-4px);} to {opacity:1; transform:none;} }
+  .alert.danger { background: var(--alert-bg); border-color: #E8C6BC; color: #8A3320; }
+  .alert.good   { background: var(--good-bg); border-color: #C5DECB; color: #2E5D3C; }
+  .alert.info   { background: var(--wfh-bg); border-color: #C9D9E5; color: #3D5C78; }
+  .alert .glyph { font-family: 'IBM Plex Mono', monospace; font-weight: 700; flex-shrink: 0; }
+  .alert b { font-weight: 700; }
+
+  /* ---------- Status strip ---------- */
+  .status-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  @media (max-width: 540px) { .status-strip { grid-template-columns: 1fr; } }
+
+  .status-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 15px;
+    box-shadow: var(--shadow-sm);
+  }
+  .status-card .label-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; gap: 6px; }
+  .status-card .label-row .title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-soft); font-weight: 600;
+  }
+  .status-card .label-row .target { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
+  .status-card .big-row { display: flex; align-items: baseline; gap: 5px; margin-bottom: 8px; }
+  .status-card .big-num { font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 700; line-height: 1; }
+  .status-card .big-of { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); }
+  .status-card.met .big-num { color: var(--good); }
+  .status-card.short .big-num { color: var(--alert); }
+  .status-card.pending .big-num { color: var(--ink); }
+
+  .bar-track { height: 7px; border-radius: 5px; background: #EFEBE0; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 5px; transition: width 0.4s ease; }
+  .status-card.met .bar-fill { background: var(--good); }
+  .status-card.short .bar-fill { background: var(--alert); }
+  .status-card.pending .bar-fill { background: var(--wfo); }
+  .status-card .sub-note { margin-top: 7px; font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
+
+  /* ---------- Calendar (compact) ---------- */
+  .cal-section {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 14px 16px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 22px;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cal-nav .month-label { font-size: 15px; font-weight: 700; }
+  .cal-nav .nav-btns { display: flex; gap: 5px; align-items: center; }
+  .nav-btn {
+    border: 1px solid var(--line-strong); background: var(--paper); border-radius: 6px;
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 13px; color: var(--ink); transition: background 0.15s;
+  }
+  .nav-btn:hover { background: #EFEBE0; }
+  .today-btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; border: 1px solid var(--line-strong);
+    background: var(--paper); border-radius: 6px; padding: 0 8px; height: 26px; cursor: pointer; color: var(--ink-soft);
+  }
+  .today-btn:hover { background: #EFEBE0; }
+
+  .weekday-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+  .weekday-row div {
+    text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.05em;
+    color: var(--ink-soft); text-transform: uppercase; padding-bottom: 2px;
+  }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+  .day-cell {
+    position: relative;
+    aspect-ratio: 1 / 0.85;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px 4px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .day-cell.outside { visibility: hidden; pointer-events: none; }
+  .day-cell.weekend {
+    cursor: default;
+    background: repeating-linear-gradient(135deg, #F1EEE5, #F1EEE5 3px, #EBE7DB 3px, #EBE7DB 6px);
+    border-color: var(--line);
+  }
+  .day-cell.before-start { cursor: not-allowed; opacity: 0.35; }
+  .day-cell.workday:hover { border-color: var(--line-strong); box-shadow: var(--shadow-sm); }
+  .day-cell .num {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--ink-soft);
+  }
+  /* Prominent today highlight */
+  .day-cell.is-today {
+    border: 2px solid var(--ink);
+    box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--ink);
+  }
+  .day-cell.is-today .num {
+    color: var(--paper-raised);
+    background: var(--ink);
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+  .day-cell.is-start-date:not(.is-today) { border-color: var(--ink); border-width: 1.5px; }
+  .day-cell .stamp {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    align-self: flex-start;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1.5;
+  }
+  .day-cell.set-WFO { background: var(--wfo-bg); border-color: #E9CBA3; }
+  .day-cell.set-WFO .stamp { background: var(--wfo); color: #fff; }
+  .day-cell.set-WFH { background: var(--wfh-bg); border-color: #C2D6E5; }
+  .day-cell.set-WFH .stamp { background: var(--wfh); color: #fff; }
+  .day-cell.set-FIELD { background: var(--field-bg); border-color: #D4C9E8; }
+  .day-cell.set-FIELD .stamp { background: var(--field); color: #fff; }
+  .day-cell.set-OTHER { background: var(--other-bg); border-color: #BFE0DD; }
+  .day-cell.set-OTHER .stamp { background: var(--other); color: #fff; }
+  .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #DDD2AC; }
+  .day-cell.set-LEAVE .stamp { background: var(--leave); color: #fff; }
+  .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #EBC1CE; }
+  .day-cell.set-PUB_HOL .stamp { background: var(--pubhol); color: #fff; }
+  .day-cell.set-OPT_HOL { background: var(--opthol-bg); border-color: #C7D5E2; }
+  .day-cell.set-OPT_HOL .stamp { background: var(--opthol); color: #fff; }
+  .day-cell.future { opacity: 0.5; }
+  .day-cell.is-selected {
+    border: 2px solid var(--ink) !important;
+    background: #E9E5D8;
+  }
+  .select-check {
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 13px; height: 13px;
+    border-radius: 3px;
+    border: 1.5px solid var(--line-strong);
+    background: var(--paper-raised);
+    font-size: 9px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--paper-raised);
+  }
+  .day-cell.is-selected .select-check {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-raised);
+  }
+  .day-cell.has-comment::after {
+    content: '';
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+
+  .cal-legend {
+    display: flex; gap: 10px; margin-top: 13px; flex-wrap: wrap; font-size: 10.5px; color: var(--ink-soft);
+  }
+  .cal-legend .item { display: flex; align-items: center; gap: 5px; }
+  .swatch { width: 9px; height: 9px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
+  .swatch.wfo { background: var(--wfo); }
+  .swatch.wfh { background: var(--wfh); }
+  .swatch.field { background: var(--field); }
+  .swatch.other { background: var(--other); }
+  .swatch.leave { background: var(--leave); }
+  .swatch.pubhol { background: var(--pubhol); }
+  .swatch.opthol { background: var(--opthol); }
+  .swatch.unset { background: var(--unset); }
+  .swatch.weekend-sw { background: repeating-linear-gradient(135deg, #DCD8CB, #DCD8CB 3px, #EBE7DB 3px, #EBE7DB 6px); border: 1px solid var(--line-strong); }
+
+  /* ---------- Overlays / modals ---------- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(31,41,55,0.32);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50;
+    animation: fadeIn 0.15s ease;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .picker-card {
+    background: var(--paper-raised);
+    border-radius: 12px;
+    padding: 18px;
+    width: 320px;
+    max-width: 100%;
+    box-shadow: 0 12px 32px rgba(31,41,55,0.22);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .picker-card .pdate { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); margin-bottom: 3px; }
+  .picker-card h3 { margin: 0 0 14px; font-size: 16px; }
+  .future-note {
+    background: var(--wfh-bg); border: 1px solid #C9D9E5; color: #3D5C78;
+    border-radius: 7px; padding: 8px 10px; font-size: 12px; line-height: 1.4; margin-bottom: 4px;
+  }
+  .picker-options { display: flex; flex-direction: column; gap: 7px; }
+  .picker-opt {
+    display: flex; align-items: center; gap: 9px; padding: 10px 11px; border-radius: 8px;
+    border: 1.5px solid var(--line); background: var(--paper); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--ink);
+    transition: all 0.12s;
+  }
+  .picker-opt:hover { border-color: var(--line-strong); }
+  .picker-opt .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .picker-opt.wfo-opt.active { background: var(--wfo-bg); border-color: var(--wfo); color: #8A4F12; }
+  .picker-opt.wfo-opt .dot { background: var(--wfo); }
+  .picker-opt.wfh-opt.active { background: var(--wfh-bg); border-color: var(--wfh); color: #2F4A61; }
+  .picker-opt.wfh-opt .dot { background: var(--wfh); }
+  .picker-opt.field-opt.active { background: var(--field-bg); border-color: var(--field); color: #4A3A75; }
+  .picker-opt.field-opt .dot { background: var(--field); }
+  .picker-opt.other-opt.active { background: var(--other-bg); border-color: var(--other); color: #275F5C; }
+  .picker-opt.other-opt .dot { background: var(--other); }
+  .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #6B5E3B; }
+  .picker-opt.leave-opt .dot { background: var(--leave); }
+  .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #7E3349; }
+  .picker-opt.pubhol-opt .dot { background: var(--pubhol); }
+  .picker-opt.opthol-opt.active { background: var(--opthol-bg); border-color: var(--opthol); color: #3F5A75; }
+  .picker-opt.opthol-opt .dot { background: var(--opthol); }
+
+  .office-select-wrap { margin-top: 8px; padding: 10px; background: var(--paper); border-radius: 8px; border: 1px solid var(--line); }
+  .office-select-wrap label, .comment-wrap label {
+    display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-soft); font-weight: 600; margin-bottom: 6px;
+  }
+  select.office-select {
+    width: 100%; padding: 8px 9px; border-radius: 7px; border: 1.5px solid var(--line-strong);
+    font-family: 'Inter', sans-serif; font-size: 13px; background: var(--paper-raised); color: var(--ink);
+  }
+  .add-location-link {
+    display: inline-block; margin-top: 7px; font-size: 12px; color: var(--wfo); cursor: pointer;
+    text-decoration: underline; font-weight: 600;
+  }
+  .comment-wrap { margin-top: 10px; }
+  textarea.comment-input {
+    width: 100%; min-height: 56px; padding: 8px 9px; border-radius: 7px; border: 1.5px solid var(--line-strong);
+    font-family: 'Inter', sans-serif; font-size: 13px; color: var(--ink); background: var(--paper-raised);
+    resize: vertical;
+  }
+  textarea.comment-input:focus, select.office-select:focus, input:focus { outline: 2px solid var(--wfo); outline-offset: 1px; }
+
+  .picker-save-row { display: flex; gap: 8px; margin-top: 14px; }
+  .picker-clear {
+    flex: none; text-align: center; background: none; border: none; color: var(--ink-soft);
+    font-size: 12px; cursor: pointer; padding: 9px 6px; text-decoration: underline;
+  }
+  .picker-clear:hover { color: var(--ink); }
+  .picker-close {
+    flex: 1; text-align: center; background: var(--ink); border: none; border-radius: 7px;
+    padding: 9px; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--paper-raised);
+  }
+  .picker-close:hover { background: #374151; }
+
+  /* Onboarding modal */
+  .onboard-card {
+    background: var(--paper-raised); border-radius: 14px; padding: 24px 22px; width: 360px; max-width: 100%;
+    box-shadow: 0 16px 40px rgba(31,41,55,0.26);
+  }
+  .onboard-card .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--wfo); font-weight: 700;
+  }
+  .onboard-card h2 { margin: 6px 0 9px; font-size: 19px; }
+  .onboard-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin: 0 0 16px; }
+  .onboard-card label {
+    display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft);
+    font-weight: 600; margin-bottom: 6px;
+  }
+  .onboard-card input[type="date"] {
+    width: 100%; padding: 9px 11px; border-radius: 8px; border: 1.5px solid var(--line-strong);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; color: var(--ink); background: var(--paper); margin-bottom: 16px;
+  }
+  .onboard-btn-row { display: flex; gap: 10px; }
+  .btn-primary {
+    flex: 1; background: var(--ink); color: var(--paper-raised); border: none; border-radius: 8px; padding: 10px;
+    font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-primary:hover { background: #374151; }
+  .btn-secondary {
+    background: var(--paper); color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 8px;
+    padding: 10px 13px; font-size: 13px; cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .btn-secondary:hover { background: #EFEBE0; }
+
+  /* Settings modal */
+  .settings-card {
+    background: var(--paper-raised); border-radius: 14px; padding: 20px; width: 360px; max-width: 100%;
+    box-shadow: 0 16px 40px rgba(31,41,55,0.26); max-height: 88vh; overflow-y: auto;
+  }
+  .settings-card h3 { margin: 0 0 3px; font-size: 16px; }
+  .settings-card .settings-sub { font-size: 12px; color: var(--ink-soft); margin-bottom: 16px; }
+  .settings-row {
+    display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .settings-row:last-of-type { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .settings-row .row-title { font-size: 13px; font-weight: 700; }
+  .settings-row .row-desc { font-size: 11.5px; color: var(--ink-soft); line-height: 1.4; }
+  .settings-btn {
+    margin-top: 3px; background: var(--paper); border: 1.5px solid var(--line-strong); border-radius: 8px;
+    padding: 8px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; color: var(--ink);
+    font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .settings-btn:hover { background: #EFEBE0; }
+  #import-file-input { display: none; }
+  .settings-current-start {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink); background: var(--paper);
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 9px;
+  }
+  .import-status { font-size: 11.5px; margin-top: 5px; padding: 6px 8px; border-radius: 6px; }
+  .import-status.ok { background: var(--good-bg); color: var(--good); }
+  .import-status.err { background: var(--alert-bg); color: var(--alert); }
+
+  /* Location management list */
+  .loc-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .loc-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 7px 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 7px; font-size: 12.5px;
+  }
+  .loc-item .loc-remove {
+    border: none; background: none; color: var(--alert); cursor: pointer; font-size: 14px; line-height: 1; padding: 2px 4px;
+  }
+  .loc-add-row { display: flex; gap: 6px; margin-top: 8px; }
+  .loc-add-row input {
+    flex: 1; padding: 8px 9px; border-radius: 7px; border: 1.5px solid var(--line-strong);
+    font-family: 'Inter', sans-serif; font-size: 12.5px; background: var(--paper-raised); color: var(--ink); min-width: 0;
+  }
+  .loc-add-row button {
+    background: var(--ink); color: var(--paper-raised); border: none; border-radius: 7px; padding: 0 12px;
+    font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+
+  /* ---------- Report section ---------- */
+  .report-section {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 14px 18px; box-shadow: var(--shadow-sm); margin-bottom: 18px;
+  }
+  .report-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 13px; flex-wrap: wrap; gap: 4px; }
+  .report-header h2 { margin: 0; font-size: 15.5px; font-weight: 700; }
+  .report-header .note { font-size: 11px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
+
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -2px; }
+  table.report-table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 12px; }
+  table.report-table th {
+    text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft);
+    font-weight: 600; padding: 0 6px 7px; border-bottom: 1.5px solid var(--ink); white-space: nowrap;
+  }
+  table.report-table td {
+    padding: 8px 6px; border-bottom: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; white-space: nowrap;
+  }
+  table.report-table td.month-name {
+    font-family: 'Inter', sans-serif; font-weight: 600; position: sticky; left: 0; background: var(--paper-raised);
+  }
+  table.report-table tr.current-row td { background: #FBF9F4; }
+  table.report-table tr.current-row td.month-name { background: #FBF9F4; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 20px;
+    font-size: 10.5px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+  }
+  .pill.met { background: var(--good-bg); color: var(--good); }
+  .pill.short { background: var(--alert-bg); color: var(--alert); }
+  .pill.partial { background: #FBF2DF; color: #92660F; }
+
+  .mini-bar-track { width: 50px; height: 6px; background: #EFEBE0; border-radius: 4px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 5px; }
+  .mini-bar-fill { height: 100%; border-radius: 4px; }
+
+  .empty-report { text-align: center; color: var(--ink-soft); font-size: 12.5px; padding: 20px 0; }
+
+  .scroll-hint { font-size: 10.5px; color: var(--ink-soft); margin-top: 6px; display: none; }
+  @media (max-width: 600px) { .scroll-hint { display: block; } }
+
+  footer.foot-note { text-align: center; font-size: 10.5px; color: var(--ink-soft); margin-top: 18px; font-family: 'IBM Plex Mono', monospace; line-height: 1.6; }
+  footer.foot-note .start-tag { display: block; }
+
+  .toast {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper-raised);
+    padding: 9px 16px; border-radius: 8px; font-size: 12.5px; font-family: 'Inter', sans-serif;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 100; animation: toastIn 0.2s ease; max-width: 90vw; text-align: center;
+  }
+  @keyframes toastIn { from { opacity:0; transform: translate(-50%, 8px);} to {opacity:1; transform: translate(-50%,0);} }
+
+  /* ---------- Multi-select floating action bar ---------- */
+  .multi-action-bar {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 60;
+    background: var(--paper-raised);
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 10px 28px rgba(31,41,55,0.22);
+    padding: 10px 12px;
+    max-width: calc(100vw - 24px);
+    animation: toastIn 0.2s ease;
+  }
+  .multi-bar-inner { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  .multi-count {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; font-weight: 700; color: var(--ink);
+    text-align: center;
+  }
+  .multi-opts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+  .multi-opt {
+    border: 1.5px solid var(--line-strong); border-radius: 7px; padding: 7px 10px; font-size: 11.5px;
+    font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; background: var(--paper); color: var(--ink);
+  }
+  .multi-opt.wfo-opt:hover { background: var(--wfo-bg); border-color: var(--wfo); }
+  .multi-opt.wfh-opt:hover { background: var(--wfh-bg); border-color: var(--wfh); }
+  .multi-opt.field-opt:hover { background: var(--field-bg); border-color: var(--field); }
+  .multi-opt.other-opt:hover { background: var(--other-bg); border-color: var(--other); }
+  .multi-opt.leave-opt:hover { background: var(--leave-bg); border-color: var(--leave); }
+  .multi-opt.pubhol-opt:hover { background: var(--pubhol-bg); border-color: var(--pubhol); }
+  .multi-opt.opthol-opt:hover { background: var(--opthol-bg); border-color: var(--opthol); }
+  .multi-opt.clear-opt { border-color: var(--alert); color: var(--alert); }
+  .multi-opt.clear-opt:hover { background: var(--alert-bg); border-color: var(--alert); }
+    border: none; background: none; color: var(--ink-soft); font-size: 11.5px; text-decoration: underline;
+    cursor: pointer; padding: 4px; text-align: center;
+  }
+  .multi-cancel:hover { color: var(--ink); }
+  @media (max-width: 480px) {
+    .multi-action-bar { left: 8px; right: 8px; transform: none; bottom: 10px; max-width: none; }
+    .multi-opt { font-size: 11px; padding: 6px 8px; }
+  }
+
+  /* ---------- Responsive tightening ---------- */
+  @media (max-width: 480px) {
+    #app { padding: 14px 10px 56px; }
+    .masthead-title h1 { font-size: 19px; }
+    .mandate-chip { font-size: 10.5px; padding: 5px 8px; gap: 8px; }
+    .icon-btn { font-size: 10.5px; padding: 6px 8px; }
+    .cal-section { padding: 11px 10px 13px; }
+    .day-cell .num { font-size: 9px; }
+    .day-cell .stamp { font-size: 7px; padding: 1px 3px; }
+    .status-card .big-num { font-size: 24px; }
+    .picker-card, .onboard-card, .settings-card { padding: 16px; }
+  }
+
+  @media (max-width: 360px) {
+    .cal-grid { gap: 3px; }
+    .weekday-row { gap: 3px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"><div style="padding:50px 20px;text-align:center;color:#6B7280;font-family:'IBM Plex Mono',monospace;font-size:13px;">Loading ledger…</div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Constants ----------
+  const WEEKLY_TARGET = 3;
+  const MONTHLY_TARGET = 12;
+  const WEEKDAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const LS_ENTRIES = 'wfo_tracker_entries_v2';
+  const LS_START_DATE = 'wfo_tracker_start_date';
+  const LS_ONBOARDED = 'wfo_tracker_onboarded';
+  const LS_LOCATIONS = 'wfo_tracker_locations';
+  const LS_NAME = 'wfo_tracker_name';
+
+  // Status types. countsTowardMandate determines weekly/monthly target math.
+  const STATUS_TYPES = {
+    WFO:    { label: 'Work from office', short: 'WFO',    countsTowardMandate: true,  needsLocation: true,  color: 'wfo' },
+    WFH:    { label: 'Work from home',   short: 'WFH',    countsTowardMandate: false, needsLocation: false, color: 'wfh' },
+    FIELD:  { label: 'Field duty',       short: 'FIELD',  countsTowardMandate: true,  needsLocation: false, color: 'field' },
+    OTHER:  { label: 'Other (out of office, work-related)', short: 'OTHER', countsTowardMandate: true, needsLocation: false, color: 'other' },
+    LEAVE:  { label: 'Leave',            short: 'LEAVE',  countsTowardMandate: false, needsLocation: false, color: 'leave' },
+    PUB_HOL: { label: 'Public holiday',   short: 'PUB-H',  countsTowardMandate: false, needsLocation: false, color: 'pubhol' },
+    OPT_HOL: { label: 'Optional holiday', short: 'OPT-H',  countsTowardMandate: false, needsLocation: false, color: 'opthol' }
+  };
+  const DEFAULT_LOCATIONS = ['Head Office', 'Annex Building', 'Client Site'];
+
+  let entries = {};        // { "YYYY-MM-DD": { type: "WFO"|"WFH"|"FIELD"|"OTHER"|"LEAVE"|"PUB_HOL"|"OPT_HOL", location?: string, comment?: string } }
+  let startDate = null;
+  let locations = [];
+  let userName = '';
+  let viewYear, viewMonth;
+  let toastTimer = null;
+  let multiSelectMode = false;
+  let selectedDates = new Set();
+
+  const today = new Date();
+  const todayKey = fmtKey(today);
+  viewYear = today.getFullYear();
+  viewMonth = today.getMonth();
+
+  function fmtKey(d){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function parseKey(k){
+    const [y,m,d] = k.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+  function isWeekend(d){ const day = d.getDay(); return day === 0 || day === 6; }
+  function esc(s){
+    const div = document.createElement('div');
+    div.textContent = s == null ? '' : String(s);
+    return div.innerHTML;
+  }
+
+  // ---------- localStorage I/O ----------
+  function loadFromStorage(){
+    try {
+      const rawEntries = localStorage.getItem(LS_ENTRIES);
+      entries = rawEntries ? JSON.parse(rawEntries) : {};
+    } catch(e) { entries = {}; }
+    // Migrate legacy v1 format ("WFO"/"WFH" strings) if present and v2 empty
+    if (Object.keys(entries).length === 0) {
+      try {
+        const legacy = localStorage.getItem('wfo_tracker_entries');
+        if (legacy) {
+          const old = JSON.parse(legacy);
+          Object.keys(old).forEach(k => {
+            const v = old[k];
+            if (v === 'WFO' || v === 'WFH') entries[k] = { type: v };
+          });
+          if (Object.keys(entries).length) saveEntries();
+        }
+      } catch(e) { /* ignore */ }
+    }
+    startDate = localStorage.getItem(LS_START_DATE) || null;
+    userName = localStorage.getItem(LS_NAME) || '';
+    try {
+      const rawLoc = localStorage.getItem(LS_LOCATIONS);
+      locations = rawLoc ? JSON.parse(rawLoc) : DEFAULT_LOCATIONS.slice();
+    } catch(e) { locations = DEFAULT_LOCATIONS.slice(); }
+    if (!Array.isArray(locations) || locations.length === 0) locations = DEFAULT_LOCATIONS.slice();
+  }
+  function saveEntries(){
+    try { localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
+    catch(e) { showToast('Could not save — storage may be full or blocked.'); }
+  }
+  function saveStartDate(dateStr){
+    startDate = dateStr;
+    localStorage.setItem(LS_START_DATE, dateStr);
+    localStorage.setItem(LS_ONBOARDED, '1');
+  }
+  function saveLocations(){
+    localStorage.setItem(LS_LOCATIONS, JSON.stringify(locations));
+  }
+  function saveUserName(name){
+    userName = name.trim();
+    localStorage.setItem(LS_NAME, userName);
+  }
+  function isOnboarded(){ return localStorage.getItem(LS_ONBOARDED) === '1'; }
+
+  // ---------- Quirky messages ----------
+  const QUIPS = {
+    metWeek: [
+      "Weekly quota: smashed. The desk plant missed you.",
+      "Three-in-the-office, achieved. Go forth and avoid eye contact in the elevator.",
+      "Weekly target cleared. Your badge has earned its keep.",
+      "You hit 3 for the week. The office chair remembers your shape now."
+    ],
+    metMonth: [
+      "12 for the month — mandate satisfied. Frame this calendar.",
+      "Monthly target: done. Treat yourself to a parking spot you didn't have to fight for.",
+      "You've out-WFO'd the mandate. The coffee machine salutes you.",
+      "Twelve office days banked. Compliance team can sleep easy."
+    ],
+    atRiskWeek: [
+      "The week is running out faster than the office snacks. Get a day in.",
+      "Math says you're cutting it close this week. The badge reader is waiting.",
+      "Tight squeeze ahead — every remaining day needs to count.",
+      "Your weekly target is doing the limbo. Don't let it lose."
+    ],
+    atRiskMonth: [
+      "The month's almost out of working days and so is your buffer.",
+      "Monthly mandate is getting nervous. It needs you in the building.",
+      "This is the 'no more skipping' phase of the month.",
+      "The calendar is closing in. Time to clock some office days."
+    ],
+    onTrackNudge: [
+      "Steady pace. Keep the badge swipes coming.",
+      "Still on schedule — no need to panic-WFO yet.",
+      "You're tracking fine. The office chair stays warm for you.",
+      "All quiet on the mandate front. Carry on."
+    ],
+    unlogged: [
+      "A few days are sitting unlabeled, like unfiled expense reports.",
+      "Some working days are still a mystery. Tap them to solve the case.",
+      "Unlogged days detected — the ledger likes its boxes ticked.",
+      "Past days are waiting patiently to be marked."
+    ],
+    freshStart: [
+      "Fresh ledger, fresh start. Let's see where you actually work.",
+      "Day one of tracking. Future-you will thank present-you for this.",
+      "The ledger is open. Every stamp counts from here.",
+      "Tracking begins now — no backdating regrets allowed."
+    ],
+    general: [
+      "Office days are like gym visits — better logged than imagined.",
+      "Somewhere, a facilities manager is quietly grateful for this spreadsheet-free tracking.",
+      "Remember: the calendar doesn't lie, but you can still forget to tap it.",
+      "Three days a week, twelve a month. The mandate doesn't negotiate.",
+      "Your desk is judging your attendance. Prove it wrong, or right."
+    ]
+  };
+  function pickQuip(arr){
+    const seed = todayKey.split('-').join('') * 1;
+    return arr[seed % arr.length];
+  }
+
+  // ---------- Date math helpers ----------
+  function getISOWeekRange(d){
+    const date = new Date(d);
+    const day = (date.getDay() + 6) % 7;
+    const monday = new Date(date);
+    monday.setDate(date.getDate() - day);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    return [monday, sunday];
+  }
+  function countMandateInRange(start, end){
+    let c = 0;
+    const d = new Date(start);
+    while (d <= end) {
+      const e = entries[fmtKey(d)];
+      if (e && STATUS_TYPES[e.type] && STATUS_TYPES[e.type].countsTowardMandate) c++;
+      d.setDate(d.getDate()+1);
+    }
+    return c;
+  }
+  function countTypeInRange(start, end, type){
+    let c = 0;
+    const d = new Date(start);
+    while (d <= end) {
+      const e = entries[fmtKey(d)];
+      if (e && e.type === type) c++;
+      d.setDate(d.getDate()+1);
+    }
+    return c;
+  }
+  function countWorkdaysInRange(start, end){
+    let c = 0;
+    const d = new Date(start);
+    while (d <= end) { if (!isWeekend(d)) c++; d.setDate(d.getDate()+1); }
+    return c;
+  }
+  function effectiveRangeStart(rawStart){
+    if (!startDate) return rawStart;
+    const sd = parseKey(startDate);
+    return rawStart < sd ? sd : rawStart;
+  }
+
+  // ---------- Computation ----------
+  function computeWeekStatus(){
+    let [mon, sun] = getISOWeekRange(today);
+    const clampedMon = effectiveRangeStart(mon);
+    const mandateCount = countMandateInRange(clampedMon, sun);
+    const workdaysElapsed = (() => {
+      let c = 0; const d = new Date(clampedMon);
+      while (d <= today && d <= sun) { if (!isWeekend(d)) c++; d.setDate(d.getDate()+1); }
+      return c;
+    })();
+    const totalWorkdaysInWeek = countWorkdaysInRange(clampedMon, sun);
+    return { wfo: mandateCount, target: WEEKLY_TARGET, workdaysElapsed, totalWorkdaysInWeek, weekStart: mon, weekEnd: sun };
+  }
+
+  function computeMonthStatus(year, month){
+    const rawStart = new Date(year, month, 1);
+    const monthEnd = new Date(year, month+1, 0);
+    const monthStart = effectiveRangeStart(rawStart);
+    const mandateCount = countMandateInRange(monthStart, monthEnd);
+    const wfoOnly = countTypeInRange(monthStart, monthEnd, 'WFO');
+    const fieldCount = countTypeInRange(monthStart, monthEnd, 'FIELD');
+    const otherCount = countTypeInRange(monthStart, monthEnd, 'OTHER');
+    const wfhCount = countTypeInRange(monthStart, monthEnd, 'WFH');
+    const leaveCount = countTypeInRange(monthStart, monthEnd, 'LEAVE');
+    const pubHolCount = countTypeInRange(monthStart, monthEnd, 'PUB_HOL');
+    const optHolCount = countTypeInRange(monthStart, monthEnd, 'OPT_HOL');
+    const totalWorkdays = countWorkdaysInRange(monthStart, monthEnd);
+    const isCurrentMonth = (year === today.getFullYear() && month === today.getMonth());
+    let workdaysElapsed = totalWorkdays;
+    if (isCurrentMonth) workdaysElapsed = countWorkdaysInRange(monthStart, today);
+    else if (monthEnd > today) workdaysElapsed = 0;
+    const remainingWorkdays = Math.max(0, totalWorkdays - workdaysElapsed);
+    const beforeTrackingEntirely = startDate && monthEnd < parseKey(startDate);
+    return {
+      wfo: mandateCount, wfoOnly, fieldCount, otherCount, wfhCount, leaveCount, pubHolCount, optHolCount,
+      totalWorkdays, workdaysElapsed, remainingWorkdays, target: MONTHLY_TARGET,
+      monthStart, monthEnd, isCurrentMonth, beforeTrackingEntirely
+    };
+  }
+
+  // ---------- Alerts ----------
+  function buildAlerts(){
+    const alerts = [];
+    const week = computeWeekStatus();
+    const month = computeMonthStatus(today.getFullYear(), today.getMonth());
+
+    const weekNeeded = week.target - week.wfo;
+    const weekWorkdaysLeft = week.totalWorkdaysInWeek - week.workdaysElapsed;
+    if (week.wfo >= week.target) {
+      alerts.push({ type:'good', glyph:'✓', html:`<b>Weekly mandate met.</b> ${week.wfo} of ${week.target} qualifying days logged this week.` });
+    } else if (weekNeeded > weekWorkdaysLeft) {
+      alerts.push({ type:'danger', glyph:'!', html:`<b>Weekly target at risk.</b> Need ${weekNeeded} more qualifying day${weekNeeded>1?'s':''} but only ${weekWorkdaysLeft} working day${weekWorkdaysLeft!==1?'s':''} left this week.` });
+    } else if (weekNeeded > 0) {
+      alerts.push({ type:'info', glyph:'·', html:`<b>${weekNeeded} day${weekNeeded>1?'s':''} needed</b> to hit this week's target of ${week.target} (${weekWorkdaysLeft} working day${weekWorkdaysLeft!==1?'s':''} remaining).` });
+    }
+
+    const monthNeeded = month.target - month.wfo;
+    if (month.wfo >= month.target) {
+      alerts.push({ type:'good', glyph:'✓', html:`<b>Monthly mandate met.</b> ${month.wfo} of ${month.target} qualifying days logged for ${MONTH_NAMES[today.getMonth()]}.` });
+    } else if (monthNeeded > month.remainingWorkdays) {
+      alerts.push({ type:'danger', glyph:'!', html:`<b>Monthly target at risk.</b> Need ${monthNeeded} more qualifying days but only ${month.remainingWorkdays} working day${month.remainingWorkdays!==1?'s':''} remain in ${MONTH_NAMES[today.getMonth()]}.` });
+    } else if (monthNeeded > 0) {
+      alerts.push({ type:'info', glyph:'·', html:`<b>${monthNeeded} day${monthNeeded>1?'s':''} needed</b> to hit this month's target of ${month.target} (${month.remainingWorkdays} working day${month.remainingWorkdays!==1?'s':''} remaining).` });
+    }
+
+    const unlogged = (() => {
+      let c = 0; const d = new Date(month.monthStart);
+      while (d <= today && d <= month.monthEnd) {
+        if (!isWeekend(d) && !entries[fmtKey(d)]) c++;
+        d.setDate(d.getDate()+1);
+      }
+      return c;
+    })();
+    if (unlogged > 0) {
+      alerts.push({ type:'info', glyph:'?', html:`<b>${unlogged} working day${unlogged>1?'s':''} unlogged</b> so far this month. Tap a date on the calendar to record it.` });
+    }
+
+    return { alerts, week, month, unlogged };
+  }
+
+  // ---------- Render: Quip banner ----------
+  function renderQuip(week, month, unlogged){
+    let pool;
+    if (month.wfo >= month.target) pool = QUIPS.metMonth;
+    else if (week.wfo >= week.target) pool = QUIPS.metWeek;
+    else if (month.target - month.wfo > month.remainingWorkdays) pool = QUIPS.atRiskMonth;
+    else if (week.target - week.wfo > (week.totalWorkdaysInWeek - week.workdaysElapsed)) pool = QUIPS.atRiskWeek;
+    else if (unlogged >= 3) pool = QUIPS.unlogged;
+    else if (Object.keys(entries).length === 0) pool = QUIPS.freshStart;
+    else pool = Math.random() < 0.5 ? QUIPS.onTrackNudge : QUIPS.general;
+    let quip = pickQuip(pool);
+    // Personalise every 3rd quip with the user's first name
+    const firstName = userName ? userName.trim().split(/\s+/)[0] : '';
+    if (firstName && parseInt(todayKey.replace(/-/g,'')) % 3 === 0) {
+      quip = `${firstName}, ` + quip.charAt(0).toLowerCase() + quip.slice(1);
+    }
+    document.getElementById('quip-banner').innerHTML = `<span class="quip-glyph">»</span><span>${esc(quip)}</span>`;
+  }
+
+  // ---------- Render: Alerts ----------
+  function renderAlerts(alerts){
+    const el = document.getElementById('alerts');
+    if (alerts.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = alerts.map(a => `
+      <div class="alert ${a.type}"><span class="glyph">${a.glyph}</span><span>${a.html}</span></div>
+    `).join('');
+  }
+
+  // ---------- Render: Status strip ----------
+  function renderStatusStrip(week, month){
+    const weekPct = Math.min(100, (week.wfo / week.target) * 100);
+    const weekClass = week.wfo >= week.target ? 'met' : (week.target - week.wfo > week.totalWorkdaysInWeek - week.workdaysElapsed ? 'short' : 'pending');
+    const monthPct = Math.min(100, (month.wfo / month.target) * 100);
+    const monthClass = month.wfo >= month.target ? 'met' : (month.target - month.wfo > month.remainingWorkdays ? 'short' : 'pending');
+    const weekRangeLabel = `${week.weekStart.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} – ${week.weekEnd.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`;
+
+    document.getElementById('status-strip').innerHTML = `
+      <div class="status-card ${weekClass}">
+        <div class="label-row"><span class="title">This week · ${weekRangeLabel}</span><span class="target mono">target ${week.target}/wk</span></div>
+        <div class="big-row"><span class="big-num">${week.wfo}</span><span class="big-of">/ ${week.target} qualifying</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${weekPct}%"></div></div>
+        <div class="sub-note">${week.workdaysElapsed} of ${week.totalWorkdaysInWeek} working days elapsed this week</div>
+      </div>
+      <div class="status-card ${monthClass}">
+        <div class="label-row"><span class="title">${MONTH_NAMES[today.getMonth()]} ${today.getFullYear()}</span><span class="target mono">target ${month.target}/mo</span></div>
+        <div class="big-row"><span class="big-num">${month.wfo}</span><span class="big-of">/ ${month.target} qualifying</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${monthPct}%"></div></div>
+        <div class="sub-note">Office ${month.wfoOnly} · Field ${month.fieldCount} · Other ${month.otherCount} · WFH ${month.wfhCount} · Leave ${month.leaveCount} · Holidays ${month.pubHolCount + month.optHolCount}</div>
+      </div>
+    `;
+  }
+
+  // ---------- Render: Calendar ----------
+  function renderCalendar(){
+    document.getElementById('month-label').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+    const grid = document.getElementById('cal-grid');
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    const startOffset = (firstOfMonth.getDay() + 6) % 7;
+    const daysInMonth = new Date(viewYear, viewMonth+1, 0).getDate();
+    const sd = startDate ? parseKey(startDate) : null;
+
+    let html = '';
+    for (let i=0; i<startOffset; i++) html += `<div class="day-cell outside"></div>`;
+
+    for (let day=1; day<=daysInMonth; day++){
+      const d = new Date(viewYear, viewMonth, day);
+      const key = fmtKey(d);
+      const weekend = isWeekend(d);
+      const isToday = key === todayKey;
+      const isFuture = d > today;
+      const beforeStart = sd && d < sd;
+      const entry = entries[key];
+
+      let classes = 'day-cell';
+      if (weekend) classes += ' weekend';
+      else if (beforeStart) classes += ' before-start';
+      else classes += ' workday';
+      if (isToday) classes += ' is-today';
+      if (key === startDate) classes += ' is-start-date';
+      if (isFuture && !weekend) classes += ' future';
+      if (entry) {
+        classes += ` set-${entry.type}`;
+        if (entry.comment) classes += ' has-comment';
+      }
+      if (multiSelectMode && selectedDates.has(key)) classes += ' is-selected';
+
+      const stamp = entry ? `<span class="stamp">${STATUS_TYPES[entry.type].short}</span>` : '';
+      const checkMark = (multiSelectMode && !weekend && !beforeStart) ? `<span class="select-check">${selectedDates.has(key) ? '✓' : ''}</span>` : '';
+      html += `<div class="${classes}" data-date="${key}" data-future="${isFuture ? '1' : ''}">
+        <span class="num">${day}</span>
+        ${checkMark}
+        ${stamp}
+      </div>`;
+    }
+    const totalCells = startOffset + daysInMonth;
+    const trailing = (7 - (totalCells % 7)) % 7;
+    for (let i=0; i<trailing; i++) html += `<div class="day-cell outside"></div>`;
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.day-cell.workday').forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (multiSelectMode) {
+          toggleDateSelection(cell.dataset.date);
+        } else {
+          openPicker(cell.dataset.date);
+        }
+      });
+    });
+  }
+
+  // Types allowed for future dates (can plan leave/holidays ahead, but not work status)
+  const FUTURE_ALLOWED_TYPES = new Set(['LEAVE', 'PUB_HOL', 'OPT_HOL']);
+
+  function toggleDateSelection(key){
+    if (selectedDates.has(key)) selectedDates.delete(key);
+    else selectedDates.add(key);
+    renderCalendar();
+    renderMultiBar();
+  }
+
+  function setMultiSelectMode(on){
+    multiSelectMode = on;
+    if (!on) selectedDates.clear();
+    const btn = document.getElementById('btn-multiselect');
+    if (btn) {
+      btn.textContent = on ? '✕ Cancel selection' : '☑ Select multiple';
+      btn.classList.toggle('active-toggle', on);
+    }
+    renderCalendar();
+    renderMultiBar();
+  }
+
+  function renderMultiBar(){
+    let bar = document.getElementById('multi-action-bar');
+    if (!multiSelectMode || selectedDates.size === 0) {
+      if (bar) bar.remove();
+      return;
+    }
+    const count = selectedDates.size;
+    const optsHtml = Object.keys(STATUS_TYPES).map(key => {
+      const t = STATUS_TYPES[key];
+      return `<button class="multi-opt ${t.color}-opt" data-val="${key}">${t.short}</button>`;
+    }).join('');
+    const html = `
+      <div class="multi-bar-inner">
+        <span class="multi-count">${count} day${count!==1?'s':''} selected — tap a status or clear</span>
+        <div class="multi-opts">
+          ${optsHtml}
+          <button class="multi-opt clear-opt" id="multi-clear-btn">CLEAR</button>
+        </div>
+        <button class="multi-cancel" id="multi-cancel-btn">Cancel selection</button>
+      </div>
+    `;
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'multi-action-bar';
+      bar.className = 'multi-action-bar';
+      document.body.appendChild(bar);
+    }
+    bar.innerHTML = html;
+    bar.querySelectorAll('.multi-opt:not(#multi-clear-btn)').forEach(btn => {
+      btn.addEventListener('click', () => applyBulkStatus(btn.dataset.val));
+    });
+    bar.querySelector('#multi-clear-btn').addEventListener('click', () => {
+      let cleared = 0;
+      selectedDates.forEach(key => { if (entries[key]) { delete entries[key]; cleared++; } });
+      saveEntries();
+      setMultiSelectMode(false);
+      renderAll();
+      showToast(`Cleared ${cleared} day${cleared!==1?'s':''}.`);
+    });
+    bar.querySelector('#multi-cancel-btn').addEventListener('click', () => setMultiSelectMode(false));
+  }
+
+  function applyBulkStatus(type){
+    const t = STATUS_TYPES[type];
+    const defaultLocation = locations[0];
+    const isFutureAllowed = FUTURE_ALLOWED_TYPES.has(type);
+    let applied = 0;
+    selectedDates.forEach(key => {
+      const d = parseKey(key);
+      if (d > today && !isFutureAllowed) return; // skip future dates for work-type statuses
+      const payload = { type };
+      if (t.needsLocation) payload.location = defaultLocation;
+      entries[key] = payload;
+      applied++;
+    });
+    saveEntries();
+    const skipped = selectedDates.size - applied;
+    setMultiSelectMode(false);
+    renderAll();
+    const msg = skipped > 0
+      ? `Marked ${applied} day${applied!==1?'s':''} as ${t.label}. ${skipped} future day${skipped!==1?'s':''} skipped.`
+      : `Marked ${applied} day${applied!==1?'s':''} as ${t.label}.`;
+    showToast(msg);
+  }
+
+
+  // ---------- Day picker ----------
+  function openPicker(dateKey){
+    const d = parseKey(dateKey);
+    const isFutureDay = d > today;
+    const label = d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    const current = entries[dateKey] || null;
+    let selectedLocation = current && current.location ? current.location : locations[0];
+    let commentDebounce = null;
+
+    // For future dates, filter to only leave/holiday types
+    const availableTypes = isFutureDay
+      ? Object.keys(STATUS_TYPES).filter(k => FUTURE_ALLOWED_TYPES.has(k))
+      : Object.keys(STATUS_TYPES);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.id = 'picker-overlay';
+
+    function applyAndClose(type){
+      const payload = { type };
+      if (type === 'WFO') payload.location = selectedLocation;
+      if (current && current.comment) payload.comment = current.comment;
+      setEntry(dateKey, payload);
+    }
+
+    // Used only when editing an already-set day's location/comment —
+    // saves in place without closing, since the picker is no longer open
+    // in "choose a status" mode at that point.
+    function commitEdit(extra){
+      const payload = Object.assign({ type: current.type }, current, extra);
+      setEntryLive(dateKey, payload);
+    }
+
+    function optsHtml(){
+      return availableTypes.map(key => {
+        const t = STATUS_TYPES[key];
+        const active = current && current.type === key ? 'active' : '';
+        return `<div class="picker-opt ${t.color}-opt ${active}" data-val="${key}"><span class="dot"></span>${t.label}</div>`;
+      }).join('');
+    }
+
+    function render(){
+      const showEditZone = !!current;
+      const futureNote = isFutureDay ? `<div class="future-note">📅 Future date — only leave &amp; holidays can be logged ahead of time.</div>` : '';
+      overlay.innerHTML = `
+        <div class="picker-card">
+          <div class="pdate mono">${dateKey}</div>
+          <h3>${label}</h3>
+          ${futureNote}
+          <p style="margin:${futureNote?'8px':'-6px'} 0 12px;font-size:11.5px;color:var(--ink-soft);">${showEditZone ? 'Tap a status to change it, or edit the details below.' : 'Tap a status to log it instantly.'}</p>
+          <div class="picker-options">${optsHtml()}</div>
+          ${showEditZone ? `<div id="extras-zone">${editZoneHtml()}</div>` : ''}
+          ${showEditZone ? `<div class="picker-save-row"><button class="picker-clear" id="picker-clear-btn">Reset to blank</button></div>` : ''}
+        </div>
+      `;
+      overlay.querySelectorAll('.picker-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const type = opt.dataset.val;
+          if (current && current.type === type) { closePicker(); return; }
+          if (type === 'WFO' && !selectedLocation) selectedLocation = locations[0];
+          applyAndClose(type);
+        });
+      });
+      const clearBtn = overlay.querySelector('#picker-clear-btn');
+      if (clearBtn) clearBtn.addEventListener('click', () => setEntry(dateKey, null));
+
+      if (showEditZone) {
+        const locEl = overlay.querySelector('#office-select');
+        if (locEl) locEl.addEventListener('change', () => {
+          selectedLocation = locEl.value;
+          current.location = selectedLocation;
+          commitEdit({ location: selectedLocation });
+        });
+        const addLocLink = overlay.querySelector('#add-location-link');
+        if (addLocLink) addLocLink.addEventListener('click', () => {
+          const name = prompt('New office location name:');
+          if (name && name.trim()) {
+            const clean = name.trim();
+            if (!locations.includes(clean)) { locations.push(clean); saveLocations(); }
+            selectedLocation = clean;
+            current.location = clean;
+            commitEdit({ location: clean });
+            render();
+          }
+        });
+        const commentEl = overlay.querySelector('#comment-input');
+        if (commentEl) {
+          commentEl.addEventListener('input', () => {
+            if (commentDebounce) clearTimeout(commentDebounce);
+            commentDebounce = setTimeout(() => {
+              const val = commentEl.value.trim();
+              if (val) {
+                current.comment = val;
+                commitEdit({ comment: val });
+              } else {
+                delete current.comment;
+                delete entries[dateKey].comment;
+                saveEntries();
+                renderCalendar();
+              }
+            }, 500);
+          });
+        }
+      }
+    }
+
+    function editZoneHtml(){
+      let html = '';
+      if (current.type === 'WFO') {
+        html += `
+          <div class="office-select-wrap">
+            <label for="office-select">Office location</label>
+            <select class="office-select" id="office-select">
+              ${locations.map(loc => `<option value="${esc(loc)}" ${loc===selectedLocation?'selected':''}>${esc(loc)}</option>`).join('')}
+            </select>
+            <span class="add-location-link" id="add-location-link">+ Add new location</span>
+          </div>
+        `;
+      }
+      html += `
+        <div class="comment-wrap">
+          <label for="comment-input">Comment <span style="text-transform:none;font-weight:400;">(optional)</span></label>
+          <textarea class="comment-input" id="comment-input" placeholder="e.g. client visit, half day, sick leave...">${current.comment ? esc(current.comment) : ''}</textarea>
+        </div>
+      `;
+      return html;
+    }
+
+    document.body.appendChild(overlay);
+    render();
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closePicker(); });
+  }
+  function closePicker(){
+    const overlay = document.getElementById('picker-overlay');
+    if (overlay) overlay.remove();
+  }
+  function setEntry(dateKey, value){
+    if (value === null) delete entries[dateKey];
+    else entries[dateKey] = value;
+    closePicker();
+    saveEntries();
+    renderAll();
+  }
+  // Saves without closing the picker — used so selecting a status or editing
+  // a comment/location commits immediately, while still letting the person
+  // adjust details before dismissing the modal.
+  function setEntryLive(dateKey, value){
+    if (value === null) delete entries[dateKey];
+    else entries[dateKey] = value;
+    saveEntries();
+    renderCalendar();
+    renderReport();
+    const { alerts, week, month, unlogged } = buildAlerts();
+    renderQuip(week, month, unlogged);
+    renderAlerts(alerts);
+    renderStatusStrip(week, month);
+  }
+
+  // ---------- Render: Report ----------
+  function renderReport(){
+    const tbody = document.getElementById('report-tbody');
+    const months = [];
+    for (let i=5; i>=0; i--){
+      const d = new Date(today.getFullYear(), today.getMonth()-i, 1);
+      months.push({ year: d.getFullYear(), month: d.getMonth() });
+    }
+
+    let anyData = false;
+    const rows = months.map(({year, month}) => {
+      const m = computeMonthStatus(year, month);
+      if (m.beforeTrackingEntirely) {
+        return `<tr><td class="month-name">${MONTH_NAMES[month]} ${year}</td><td colspan="10" style="color:var(--ink-soft);font-family:'Inter',sans-serif;font-style:italic;">before tracking started</td></tr>`;
+      }
+      if (m.wfo > 0 || m.wfhCount > 0 || m.leaveCount > 0 || m.pubHolCount > 0 || m.optHolCount > 0) anyData = true;
+      const isCurrent = m.isCurrentMonth;
+      const pct = m.totalWorkdays ? Math.min(100, (m.wfo / m.target) * 100) : 0;
+
+      let pillClass, pillLabel;
+      if (isCurrent) {
+        if (m.wfo >= m.target) { pillClass='met'; pillLabel='On track'; }
+        else if (m.target - m.wfo > m.remainingWorkdays) { pillClass='short'; pillLabel='At risk'; }
+        else { pillClass='partial'; pillLabel='In progress'; }
+      } else {
+        pillClass = m.wfo >= m.target ? 'met' : 'short';
+        pillLabel = m.wfo >= m.target ? 'Met' : 'Missed';
+      }
+      const barColor = pillClass === 'met' ? 'var(--good)' : (pillClass === 'short' ? 'var(--alert)' : 'var(--wfo)');
+
+      return `
+        <tr class="${isCurrent?'current-row':''}">
+          <td class="month-name">${MONTH_NAMES[month]} ${year}${isCurrent?' <span style="color:var(--ink-soft);font-weight:400;font-size:10px;">(current)</span>':''}</td>
+          <td>${m.wfoOnly}</td>
+          <td>${m.fieldCount}</td>
+          <td>${m.otherCount}</td>
+          <td>${m.wfhCount}</td>
+          <td>${m.leaveCount}</td>
+          <td>${m.pubHolCount}</td>
+          <td>${m.optHolCount}</td>
+          <td>${m.totalWorkdays}</td>
+          <td><span class="mini-bar-track"><span class="mini-bar-fill" style="width:${pct}%;background:${barColor}"></span></span><span style="font-size:10.5px;color:var(--ink-soft);">${m.wfo}/${m.target}</span></td>
+          <td><span class="pill ${pillClass}">${pillLabel}</span></td>
+        </tr>
+      `;
+    });
+
+    if (!anyData) {
+      tbody.innerHTML = `<tr><td colspan="11"><div class="empty-report">No entries logged yet. Mark a working day on the calendar above to start building your report.</div></td></tr>`;
+    } else {
+      tbody.innerHTML = rows.join('');
+    }
+  }
+
+  // ---------- Export / Import ----------
+  function exportData(){
+    const payload = { app: 'whereat', version: 2, exportedAt: new Date().toISOString(), startDate, locations, entries };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `whereat-export-${fmtKey(today)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Export downloaded.');
+  }
+
+  function handleImportFile(file){
+    const statusEl = document.getElementById('import-status');
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!data || typeof data.entries !== 'object') throw new Error('Missing entries object');
+        const cleanEntries = {};
+        Object.keys(data.entries).forEach(k => {
+          if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) return;
+          const v = data.entries[k];
+          // v2 object format
+          if (v && typeof v === 'object' && STATUS_TYPES[v.type]) {
+            const clean = { type: v.type };
+            if (v.location) clean.location = String(v.location);
+            if (v.comment) clean.comment = String(v.comment);
+            cleanEntries[k] = clean;
+          } else if (v === 'WFO' || v === 'WFH') {
+            // legacy v1 string format
+            cleanEntries[k] = { type: v };
+          }
+        });
+        entries = Object.assign({}, entries, cleanEntries);
+        saveEntries();
+        if (Array.isArray(data.locations)) {
+          data.locations.forEach(loc => { if (loc && !locations.includes(loc)) locations.push(loc); });
+          saveLocations();
+        }
+        if (data.startDate && /^\d{4}-\d{2}-\d{2}$/.test(data.startDate)) {
+          if (!startDate || parseKey(data.startDate) < parseKey(startDate)) saveStartDate(data.startDate);
+        }
+        statusEl.className = 'import-status ok';
+        statusEl.textContent = `Imported ${Object.keys(cleanEntries).length} entries.`;
+        renderAll();
+      } catch(err) {
+        statusEl.className = 'import-status err';
+        statusEl.textContent = 'Could not read that file — is it a WhereAt export?';
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------- Toast ----------
+  function showToast(msg){
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.remove(), 2600);
+  }
+
+  // ---------- Onboarding modal ----------
+  function showOnboarding(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.id = 'onboard-overlay';
+    const defaultDate = fmtKey(today);
+    overlay.innerHTML = `
+      <div class="onboard-card">
+        <span class="eyebrow">First time here</span>
+        <h2>Let's set up WhereAt</h2>
+        <p>Quick setup — your name and the date you want to start tracking from.</p>
+        <label for="onboard-name">Your name</label>
+        <input type="text" id="onboard-name" placeholder="e.g. Fahad" maxlength="40" autocomplete="given-name" value="${esc(userName)}" style="width:100%;padding:9px 11px;border-radius:8px;border:1.5px solid var(--line-strong);font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:var(--paper);margin-bottom:16px;" />
+        <label for="onboard-date">Start date</label>
+        <input type="date" id="onboard-date" value="${defaultDate}" max="${defaultDate}" />
+        <div class="onboard-btn-row"><button class="btn-primary" id="onboard-confirm">Start tracking</button></div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    // Focus name field
+    setTimeout(() => { const n = document.getElementById('onboard-name'); if(n) n.focus(); }, 80);
+    document.getElementById('onboard-confirm').addEventListener('click', () => {
+      const nameVal = (document.getElementById('onboard-name').value || '').trim();
+      const dateVal = document.getElementById('onboard-date').value || defaultDate;
+      if (nameVal) saveUserName(nameVal);
+      saveStartDate(dateVal);
+      overlay.remove();
+      renderAll();
+      const greeting = nameVal ? `Welcome, ${nameVal}! Tracking started.` : "Tracking started — let's go.";
+      showToast(greeting);
+    });
+    // Allow Enter key on name field to move to date
+    document.getElementById('onboard-name').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('onboard-date').focus();
+    });
+  }
+
+  // ---------- Settings modal ----------
+  function renderLocList(){
+    const wrap = document.getElementById('loc-list-wrap');
+    if (!wrap) return;
+    wrap.innerHTML = locations.map((loc, i) => `
+      <div class="loc-item">
+        <span>${esc(loc)}</span>
+        <button class="loc-remove" data-idx="${i}" title="Remove" aria-label="Remove location">✕</button>
+      </div>
+    `).join('');
+    wrap.querySelectorAll('.loc-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (locations.length <= 1) { showToast('Keep at least one location.'); return; }
+        locations.splice(Number(btn.dataset.idx), 1);
+        saveLocations();
+        renderLocList();
+      });
+    });
+  }
+
+  function showSettings(){
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.id = 'settings-overlay';
+    overlay.innerHTML = `
+      <div class="settings-card">
+        <h3>Data & settings</h3>
+        <div class="settings-sub">Everything is stored locally in this browser.</div>
+
+        <div class="settings-row">
+          <span class="row-title">Your name</span>
+          <span class="row-desc">Shown in the header to personalise your tracker.</span>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <input type="text" id="settings-name" value="${esc(userName)}" placeholder="Your name" maxlength="40"
+              style="flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line-strong);font-family:'Inter',sans-serif;font-size:13px;background:var(--paper);min-width:0;" />
+            <button class="settings-btn" id="settings-save-name" style="margin-top:0;white-space:nowrap;">Save</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <span class="row-title">Office locations</span>
+          <span class="row-desc">Manage the locations available when logging a WFO day.</span>
+          <div class="loc-list" id="loc-list-wrap"></div>
+          <div class="loc-add-row">
+            <input type="text" id="loc-add-input" placeholder="New location name" maxlength="60" />
+            <button id="loc-add-btn">Add</button>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <span class="row-title">Tracking start date</span>
+          <span class="settings-current-start mono">${startDate || '—'}</span>
+          <span class="row-desc">Change when your ledger begins counting toward targets.</span>
+          <input type="date" id="settings-start-date" value="${startDate || fmtKey(today)}" max="${fmtKey(today)}" style="margin-top:4px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line-strong);font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--paper);" />
+          <button class="settings-btn" id="settings-save-start">Update start date</button>
+        </div>
+
+        <div class="settings-row">
+          <span class="row-title">Export your data</span>
+          <span class="row-desc">Download everything as a JSON file — keep it as a backup or move it to another machine.</span>
+          <button class="settings-btn" id="settings-export">⭳ Export JSON</button>
+        </div>
+
+        <div class="settings-row">
+          <span class="row-title">Import data</span>
+          <span class="row-desc">Load a previously exported JSON file. Entries merge with what's already here.</span>
+          <button class="settings-btn" id="settings-import">⭱ Choose file…</button>
+          <input type="file" id="import-file-input" accept="application/json,.json" />
+          <div id="import-status"></div>
+        </div>
+
+        <button class="btn-secondary" id="settings-close" style="width:100%;margin-top:2px;">Close</button>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    renderLocList();
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+    document.getElementById('settings-close').addEventListener('click', () => overlay.remove());
+    document.getElementById('settings-export').addEventListener('click', exportData);
+    document.getElementById('settings-save-name').addEventListener('click', () => {
+      const val = document.getElementById('settings-name').value.trim();
+      saveUserName(val);
+      renderAll();
+      showToast(val ? `Name updated to ${val}.` : 'Name cleared.');
+    });
+    document.getElementById('settings-name').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('settings-save-name').click();
+    });
+    document.getElementById('settings-save-start').addEventListener('click', () => {
+      const val = document.getElementById('settings-start-date').value;
+      if (val) { saveStartDate(val); renderAll(); showToast('Start date updated.'); overlay.remove(); }
+    });
+    document.getElementById('loc-add-btn').addEventListener('click', () => {
+      const input = document.getElementById('loc-add-input');
+      const val = input.value.trim();
+      if (val && !locations.includes(val)) {
+        locations.push(val);
+        saveLocations();
+        input.value = '';
+        renderLocList();
+      }
+    });
+    document.getElementById('loc-add-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('loc-add-btn').click();
+    });
+    const fileInput = document.getElementById('import-file-input');
+    document.getElementById('settings-import').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) handleImportFile(e.target.files[0]);
+    });
+  }
+
+  // ---------- Master render ----------
+  function renderUserBadge(){
+    const el = document.getElementById('user-badge');
+    if (!el) return;
+    if (!userName) { el.innerHTML = ''; return; }
+    // Initials avatar: first letter of first and last word
+    const parts = userName.trim().split(/\s+/);
+    const initials = parts.length >= 2
+      ? parts[0][0] + parts[parts.length-1][0]
+      : parts[0].slice(0, 2);
+    el.innerHTML = `
+      <div class="user-badge">
+        <div class="user-avatar">${esc(initials.toUpperCase())}</div>
+        <span class="user-name">${esc(userName)}</span>
+      </div>
+    `;
+  }
+
+  function renderAll(){
+    const { alerts, week, month, unlogged } = buildAlerts();
+    renderQuip(week, month, unlogged);
+    renderAlerts(alerts);
+    renderStatusStrip(week, month);
+    renderCalendar();
+    renderReport();
+    renderUserBadge();
+    const tag = document.getElementById('start-tag');
+    if (tag) tag.textContent = startDate ? `Tracking since ${startDate}` : '';
+  }
+
+  // ---------- Shell ----------
+  function buildShell(){
+    document.getElementById('app').innerHTML = `
+      <header class="masthead">
+        <div class="masthead-title">
+          <div class="product-lockup">
+            <svg class="product-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="32" height="32" rx="7" fill="#1F2937"/>
+              <ellipse cx="16" cy="26" rx="5" ry="1.5" fill="#C2741F" opacity=".35"/>
+              <path d="M16 4C11.6 4 8 7.6 8 12c0 6 8 16 8 16s8-10 8-16c0-4.4-3.6-8-8-8z" fill="#C2741F"/>
+              <rect x="12" y="10" width="8" height="6" rx="1" fill="#1F2937" opacity=".9"/>
+              <rect x="13.5" y="11.5" width="2" height="2" rx=".5" fill="#C2741F"/>
+              <rect x="16.5" y="11.5" width="2" height="2" rx=".5" fill="#C2741F"/>
+              <rect x="14.5" y="13.5" width="3" height="2" rx=".5" fill="#C2741F"/>
+            </svg>
+            <div class="product-text">
+              <span class="eyebrow">Where I worked, logged</span>
+              <h1>WhereAt</h1>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <div id="user-badge"></div>
+          <div class="mandate-chip">
+            <span>Weekly <b>${WEEKLY_TARGET}d</b></span>
+            <span>Monthly <b>${MONTHLY_TARGET}d</b></span>
+          </div>
+          <button class="icon-btn" id="btn-settings">⚙ Settings</button>
+        </div>
+      </header>
+
+      <div class="quip-banner" id="quip-banner"></div>
+      <div id="alerts"></div>
+      <div class="status-strip" id="status-strip"></div>
+
+      <section class="cal-section">
+        <div class="cal-nav">
+          <div class="month-label" id="month-label"></div>
+          <div class="nav-btns">
+            <button class="icon-btn" id="btn-multiselect">☑ Select multiple</button>
+            <button class="today-btn" id="btn-today">TODAY</button>
+            <button class="nav-btn" id="btn-prev" aria-label="Previous month">‹</button>
+            <button class="nav-btn" id="btn-next" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="weekday-row">${WEEKDAYS.map(w=>`<div>${w}</div>`).join('')}</div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend">
+          <span class="item"><span class="swatch wfo"></span>Office</span>
+          <span class="item"><span class="swatch wfh"></span>WFH</span>
+          <span class="item"><span class="swatch field"></span>Field</span>
+          <span class="item"><span class="swatch other"></span>Other</span>
+          <span class="item"><span class="swatch leave"></span>Leave</span>
+          <span class="item"><span class="swatch pubhol"></span>Public hol.</span>
+          <span class="item"><span class="swatch opthol"></span>Optional hol.</span>
+          <span class="item"><span class="swatch weekend-sw"></span>Weekend</span>
+        </div>
+      </section>
+
+      <section class="report-section">
+        <div class="report-header">
+          <h2>Month on month report</h2>
+          <span class="note">last 6 months</span>
+        </div>
+        <div class="table-scroll">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Month</th><th>Office</th><th>Field</th><th>Other</th><th>WFH</th><th>Leave</th><th>Pub&nbsp;Hol</th><th>Opt&nbsp;Hol</th><th>Work&nbsp;days</th><th>vs target</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="report-tbody"></tbody>
+          </table>
+        </div>
+        <div class="scroll-hint">→ scroll sideways for more columns</div>
+      </section>
+
+      <footer class="foot-note">
+        Mandate · ${WEEKLY_TARGET} qualifying days / week · ${MONTHLY_TARGET} / month — stored locally in this browser
+        <span class="start-tag" id="start-tag"></span>
+      </footer>
+    `;
+
+    document.getElementById('btn-multiselect').addEventListener('click', () => setMultiSelectMode(!multiSelectMode));
+    document.getElementById('btn-prev').addEventListener('click', () => { viewMonth--; if (viewMonth < 0){ viewMonth = 11; viewYear--; } renderCalendar(); });
+    document.getElementById('btn-next').addEventListener('click', () => { viewMonth++; if (viewMonth > 11){ viewMonth = 0; viewYear++; } renderCalendar(); });
+    document.getElementById('btn-today').addEventListener('click', () => { viewYear = today.getFullYear(); viewMonth = today.getMonth(); renderCalendar(); });
+    document.getElementById('btn-settings').addEventListener('click', showSettings);
+  }
+
+  // ---------- Init ----------
+  function init(){
+    loadFromStorage();
+    buildShell();
+    renderAll();
+    if (!isOnboarded()) showOnboarding();
+
+    // Refresh data when tab is re-activated (e.g. coming back from another tab)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        loadFromStorage();
+        renderAll();
+      }
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
