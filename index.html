@@ -10,33 +10,46 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --paper: #F7F5F0;
+    --paper: #F5F3EE;
     --paper-raised: #FFFFFF;
-    --ink: #1F2937;
+    --ink: #111827;
     --ink-soft: #6B7280;
-    --line: #E3DFD4;
-    --line-strong: #C9C3B3;
-    --wfo: #C2741F;
-    --wfo-bg: #FBF0E2;
-    --wfh: #5B7A99;
-    --wfh-bg: #EAF0F5;
-    --field: #6E5B9E;
-    --field-bg: #EFEAF6;
-    --other: #3F8E8A;
-    --other-bg: #E5F3F2;
-    --leave: #9C8B5E;
-    --leave-bg: #F3EEE0;
-    --pubhol: #B5526B;
-    --pubhol-bg: #FBEAEF;
-    --opthol: #7E96B0;
-    --opthol-bg: #ECF1F5;
-    --alert: #B5432B;
-    --alert-bg: #FCEAE5;
-    --good: #3F7A52;
-    --good-bg: #E9F3EC;
-    --unset: #D8D3C4;
-    --shadow-sm: 0 1px 2px rgba(31,41,55,0.06);
-    --shadow-md: 0 4px 14px rgba(31,41,55,0.08);
+    --line: #E2DDD4;
+    --line-strong: #C5BFB0;
+    /* WFO — warm amber (default) */
+    --wfo: #D4620A;
+    --wfo-bg: #FFF0E0;
+    /* WFO location variants */
+    --wfo-blr: #7C3AED;          /* Bangalore — vivid violet */
+    --wfo-blr-bg: #EDE9FE;
+    --wfo-mng: #0284C7;          /* Mangalore — ocean blue */
+    --wfo-mng-bg: #E0F2FE;
+    /* WFH — deep sky */
+    --wfh: #0369A1;
+    --wfh-bg: #E0F2FE;
+    /* Field — forest green */
+    --field: #15803D;
+    --field-bg: #DCFCE7;
+    /* Other — teal */
+    --other: #0F766E;
+    --other-bg: #CCFBF1;
+    /* Leave — warm mauve */
+    --leave: #9333EA;
+    --leave-bg: #F3E8FF;
+    /* Public holiday — vivid rose */
+    --pubhol: #E11D48;
+    --pubhol-bg: #FFE4E6;
+    /* Optional holiday — slate blue */
+    --opthol: #4F46E5;
+    --opthol-bg: #EEF2FF;
+    /* Alerts / good */
+    --alert: #DC2626;
+    --alert-bg: #FEF2F2;
+    --good: #16A34A;
+    --good-bg: #F0FDF4;
+    --unset: #D1CBC0;
+    --shadow-sm: 0 1px 3px rgba(17,24,39,0.08);
+    --shadow-md: 0 4px 16px rgba(17,24,39,0.10);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -289,19 +302,19 @@
     border-radius: 3px;
     line-height: 1.5;
   }
-  .day-cell.set-WFO { background: var(--wfo-bg); border-color: #E9CBA3; }
+  .day-cell.set-WFO { background: var(--wfo-bg); border-color: #FDBA74; }
   .day-cell.set-WFO .stamp { background: var(--wfo); color: #fff; }
-  .day-cell.set-WFH { background: var(--wfh-bg); border-color: #C2D6E5; }
+  .day-cell.set-WFH { background: var(--wfh-bg); border-color: #7DD3FC; }
   .day-cell.set-WFH .stamp { background: var(--wfh); color: #fff; }
-  .day-cell.set-FIELD { background: var(--field-bg); border-color: #D4C9E8; }
+  .day-cell.set-FIELD { background: var(--field-bg); border-color: #86EFAC; }
   .day-cell.set-FIELD .stamp { background: var(--field); color: #fff; }
-  .day-cell.set-OTHER { background: var(--other-bg); border-color: #BFE0DD; }
+  .day-cell.set-OTHER { background: var(--other-bg); border-color: #5EEAD4; }
   .day-cell.set-OTHER .stamp { background: var(--other); color: #fff; }
-  .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #DDD2AC; }
+  .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #D8B4FE; }
   .day-cell.set-LEAVE .stamp { background: var(--leave); color: #fff; }
-  .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #EBC1CE; }
+  .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #FDA4AF; }
   .day-cell.set-PUB_HOL .stamp { background: var(--pubhol); color: #fff; }
-  .day-cell.set-OPT_HOL { background: var(--opthol-bg); border-color: #C7D5E2; }
+  .day-cell.set-OPT_HOL { background: var(--opthol-bg); border-color: #A5B4FC; }
   .day-cell.set-OPT_HOL .stamp { background: var(--opthol); color: #fff; }
   .day-cell.future { opacity: 0.5; }
   .day-cell.is-selected {
@@ -342,6 +355,8 @@
   .cal-legend .item { display: flex; align-items: center; gap: 5px; }
   .swatch { width: 9px; height: 9px; border-radius: 3px; display: inline-block; flex-shrink: 0; }
   .swatch.wfo { background: var(--wfo); }
+  .swatch.wfo-blr { background: var(--wfo-blr); }
+  .swatch.wfo-mng { background: var(--wfo-mng); }
   .swatch.wfh { background: var(--wfh); }
   .swatch.field { background: var(--field); }
   .swatch.other { background: var(--other); }
@@ -388,19 +403,19 @@
   }
   .picker-opt:hover { border-color: var(--line-strong); }
   .picker-opt .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  .picker-opt.wfo-opt.active { background: var(--wfo-bg); border-color: var(--wfo); color: #8A4F12; }
+  .picker-opt.wfo-opt.active { background: var(--wfo-bg); border-color: var(--wfo); color: #92400E; }
   .picker-opt.wfo-opt .dot { background: var(--wfo); }
-  .picker-opt.wfh-opt.active { background: var(--wfh-bg); border-color: var(--wfh); color: #2F4A61; }
+  .picker-opt.wfh-opt.active { background: var(--wfh-bg); border-color: var(--wfh); color: #075985; }
   .picker-opt.wfh-opt .dot { background: var(--wfh); }
-  .picker-opt.field-opt.active { background: var(--field-bg); border-color: var(--field); color: #4A3A75; }
+  .picker-opt.field-opt.active { background: var(--field-bg); border-color: var(--field); color: #166534; }
   .picker-opt.field-opt .dot { background: var(--field); }
-  .picker-opt.other-opt.active { background: var(--other-bg); border-color: var(--other); color: #275F5C; }
+  .picker-opt.other-opt.active { background: var(--other-bg); border-color: var(--other); color: #134E4A; }
   .picker-opt.other-opt .dot { background: var(--other); }
-  .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #6B5E3B; }
+  .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #6B21A8; }
   .picker-opt.leave-opt .dot { background: var(--leave); }
-  .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #7E3349; }
+  .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #9F1239; }
   .picker-opt.pubhol-opt .dot { background: var(--pubhol); }
-  .picker-opt.opthol-opt.active { background: var(--opthol-bg); border-color: var(--opthol); color: #3F5A75; }
+  .picker-opt.opthol-opt.active { background: var(--opthol-bg); border-color: var(--opthol); color: #3730A3; }
   .picker-opt.opthol-opt .dot { background: var(--opthol); }
 
   .office-select-wrap { margin-top: 8px; padding: 10px; background: var(--paper); border-radius: 8px; border: 1px solid var(--line); }
@@ -656,7 +671,7 @@
     PUB_HOL: { label: 'Public holiday',   short: 'PUB-H',  countsTowardMandate: false, needsLocation: false, color: 'pubhol' },
     OPT_HOL: { label: 'Optional holiday', short: 'OPT-H',  countsTowardMandate: false, needsLocation: false, color: 'opthol' }
   };
-  const DEFAULT_LOCATIONS = ['Head Office', 'Annex Building', 'Client Site'];
+  const DEFAULT_LOCATIONS = ['Bangalore', 'Mangalore', 'Client Site', 'Head Office'];
 
   let entries = {};        // { "YYYY-MM-DD": { type: "WFO"|"WFH"|"FIELD"|"OTHER"|"LEAVE"|"PUB_HOL"|"OPT_HOL", location?: string, comment?: string } }
   let startDate = null;
@@ -683,6 +698,29 @@
     return new Date(y, m-1, d);
   }
   function isWeekend(d){ const day = d.getDay(); return day === 0 || day === 6; }
+
+  // Returns { stampStyle, cellBg, cellBorder } inline style strings for WFO entries
+  // based on office location. Non-WFO types return empty strings.
+  function wfoLocStyle(entry){
+    if (!entry || entry.type !== 'WFO') return { stampStyle:'', cellBg:'', cellBorder:'' };
+    const loc = (entry.location || '').toLowerCase();
+    if (loc.includes('bangalore') || loc.includes('bengaluru')) {
+      return {
+        stampStyle: 'background:var(--wfo-blr);color:#fff;',
+        cellBg: 'background:var(--wfo-blr-bg);',
+        cellBorder: 'border-color:#C4B5FD;'
+      };
+    }
+    if (loc.includes('mangalore') || loc.includes('mangaluru')) {
+      return {
+        stampStyle: 'background:var(--wfo-mng);color:#fff;',
+        cellBg: 'background:var(--wfo-mng-bg);',
+        cellBorder: 'border-color:#7DD3FC;'
+      };
+    }
+    return { stampStyle:'', cellBg:'', cellBorder:'' };
+  }
+
   function esc(s){
     const div = document.createElement('div');
     div.textContent = s == null ? '' : String(s);
@@ -1000,9 +1038,16 @@
       }
       if (multiSelectMode && selectedDates.has(key)) classes += ' is-selected';
 
-      const stamp = entry ? `<span class="stamp">${STATUS_TYPES[entry.type].short}</span>` : '';
+      const stamp = entry
+        ? (() => {
+            const { stampStyle } = wfoLocStyle(entry);
+            return `<span class="stamp" ${stampStyle ? `style="${stampStyle}"` : ''}>${STATUS_TYPES[entry.type].short}</span>`;
+          })()
+        : '';
+      const { cellBg, cellBorder } = wfoLocStyle(entry);
+      const locStyle = (cellBg || cellBorder) ? ` style="${cellBg}${cellBorder}"` : '';
       const checkMark = (multiSelectMode && !weekend && !beforeStart) ? `<span class="select-check">${selectedDates.has(key) ? '✓' : ''}</span>` : '';
-      html += `<div class="${classes}" data-date="${key}" data-future="${isFuture ? '1' : ''}">
+      html += `<div class="${classes}" data-date="${key}" data-future="${isFuture ? '1' : ''}"${locStyle}>
         <span class="num">${day}</span>
         ${checkMark}
         ${stamp}
@@ -1274,10 +1319,11 @@
   function renderReport(){
     const tbody = document.getElementById('report-tbody');
     const months = [];
-    for (let i=5; i>=0; i--){
+    for (let i=0; i<=5; i++){
       const d = new Date(today.getFullYear(), today.getMonth()-i, 1);
       months.push({ year: d.getFullYear(), month: d.getMonth() });
     }
+    // Current month first (i=0), oldest last (i=5)
 
     let anyData = false;
     const rows = months.map(({year, month}) => {
@@ -1621,6 +1667,8 @@
         <div class="cal-grid" id="cal-grid"></div>
         <div class="cal-legend">
           <span class="item"><span class="swatch wfo"></span>Office</span>
+          <span class="item"><span class="swatch wfo-blr"></span>Office · Bangalore</span>
+          <span class="item"><span class="swatch wfo-mng"></span>Office · Mangalore</span>
           <span class="item"><span class="swatch wfh"></span>WFH</span>
           <span class="item"><span class="swatch field"></span>Field</span>
           <span class="item"><span class="swatch other"></span>Other</span>
