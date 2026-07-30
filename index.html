@@ -1337,8 +1337,7 @@
 
       let pillClass, pillLabel;
       if (isCurrent) {
-        if (m.wfo = m.target) { pillClass='met'; pillLabel='Met'; }
-        else if (m.wfo > m.target) { pillClass='met'; pillLabel='Smashing it!'; }
+        if (m.wfo >= m.target) { pillClass='met'; pillLabel='Smashing it!'; }
         else if (m.target - m.wfo > m.remainingWorkdays) { pillClass='short'; pillLabel='At risk'; }
         else { pillClass='partial'; pillLabel='In progress'; }
       } else {
