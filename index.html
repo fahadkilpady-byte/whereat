@@ -20,13 +20,13 @@
     --wfo: #D4620A;
     --wfo-bg: #FFF0E0;
     /* WFO location variants */
-    --wfo-blr: #7C3AED;          /* Bangalore — vivid violet */
-    --wfo-blr-bg: #EDE9FE;
-    --wfo-mng: #0284C7;          /* Mangalore — ocean blue */
-    --wfo-mng-bg: #E0F2FE;
+    --wfo-blr: #C41C1C;          /* Bangalore — bold crimson */
+    --wfo-blr-bg: #FEE2E2;
+    --wfo-mng: #166534;          /* Mangalore — deep forest green */
+    --wfo-mng-bg: #DCFCE7;
     /* WFH — deep sky */
     --wfh: #0369A1;
-    --wfh-bg: #E3FEE0
+    --wfh-bg: #E0F2FE;
     /* Field — forest green */
     --field: #15803D;
     --field-bg: #DCFCE7;
@@ -34,8 +34,8 @@
     --other: #0F766E;
     --other-bg: #CCFBF1;
     /* Leave — warm mauve */
-    --leave: #9333EA;
-    --leave-bg: #F3E8FF;
+    --leave: #B45309;
+    --leave-bg: #FEF3C7;
     /* Public holiday — vivid rose */
     --pubhol: #E11D48;
     --pubhol-bg: #FFE4E6;
@@ -310,7 +310,7 @@
   .day-cell.set-FIELD .stamp { background: var(--field); color: #fff; }
   .day-cell.set-OTHER { background: var(--other-bg); border-color: #5EEAD4; }
   .day-cell.set-OTHER .stamp { background: var(--other); color: #fff; }
-  .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #D8B4FE; }
+  .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #FCD34D; }
   .day-cell.set-LEAVE .stamp { background: var(--leave); color: #fff; }
   .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #FDA4AF; }
   .day-cell.set-PUB_HOL .stamp { background: var(--pubhol); color: #fff; }
@@ -411,7 +411,7 @@
   .picker-opt.field-opt .dot { background: var(--field); }
   .picker-opt.other-opt.active { background: var(--other-bg); border-color: var(--other); color: #134E4A; }
   .picker-opt.other-opt .dot { background: var(--other); }
-  .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #6B21A8; }
+  .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #92400E; }
   .picker-opt.leave-opt .dot { background: var(--leave); }
   .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #9F1239; }
   .picker-opt.pubhol-opt .dot { background: var(--pubhol); }
@@ -438,6 +438,8 @@
     resize: vertical;
   }
   textarea.comment-input:focus, select.office-select:focus, input:focus { outline: 2px solid var(--wfo); outline-offset: 1px; }
+
+  /* Time editor inside picker */
 
   .picker-save-row { display: flex; gap: 8px; margin-top: 14px; }
   .picker-clear {
@@ -496,6 +498,23 @@
   .settings-row:last-of-type { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
   .settings-row .row-title { font-size: 13px; font-weight: 700; }
   .settings-row .row-desc { font-size: 11.5px; color: var(--ink-soft); line-height: 1.4; }
+  .settings-toggle-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; }
+  .settings-toggle-row > div { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  /* Toggle switch */
+  .toggle-switch {
+    position: relative; flex-shrink: 0;
+    width: 42px; height: 24px;
+    background: var(--line-strong); border: none; border-radius: 12px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .toggle-switch.on { background: var(--good); }
+  .toggle-knob {
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    transition: transform 0.2s;
+  }
+  .toggle-switch.on .toggle-knob { transform: translateX(18px); }
   .settings-btn {
     margin-top: 3px; background: var(--paper); border: 1.5px solid var(--line-strong); border-radius: 8px;
     padding: 8px 11px; font-size: 12.5px; font-weight: 600; cursor: pointer; color: var(--ink);
@@ -540,7 +559,7 @@
   .report-header .note { font-size: 11px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
 
   .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -2px; }
-  table.report-table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 12px; }
+  table.report-table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 12px; }
   table.report-table th {
     text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft);
     font-weight: 600; padding: 0 6px 7px; border-bottom: 1.5px solid var(--ink); white-space: nowrap;
@@ -572,6 +591,62 @@
 
   footer.foot-note { text-align: center; font-size: 10.5px; color: var(--ink-soft); margin-top: 18px; font-family: 'IBM Plex Mono', monospace; line-height: 1.6; }
   footer.foot-note .start-tag { display: block; }
+
+  /* ---------- Cell time display ---------- */
+  .cell-time {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 7.5px;
+    font-weight: 600;
+    color: var(--wfo);
+    line-height: 1;
+    margin-top: 1px;
+  }
+  .live-dot {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--good);
+    animation: pulse 1.4s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* ---------- Hours input (in day picker) ---------- */
+  .time-editor-wrap {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+  }
+  .hours-label {
+    display: block;
+    font-size: 11px; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .hours-input-row {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hours-input {
+    width: 80px;
+    padding: 7px 10px;
+    font-size: 16px; font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line-strong);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .hours-input:focus { border-color: var(--wfo); }
+  .hours-unit {
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+  }
 
   .toast {
     position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper-raised);
@@ -660,6 +735,8 @@
   const LS_ONBOARDED = 'wfo_tracker_onboarded';
   const LS_LOCATIONS = 'wfo_tracker_locations';
   const LS_NAME = 'wfo_tracker_name';
+  const LS_TIME = 'wfo_tracker_time'; // { "YYYY-MM-DD": [{in: ms, out: ms|null}, ...] }
+  const LS_TIME_TRACKING = 'wfo_tracker_time_tracking'; // "1" | "0"
 
   // Status types. countsTowardMandate determines weekly/monthly target math.
   const STATUS_TYPES = {
@@ -671,12 +748,14 @@
     PUB_HOL: { label: 'Public holiday',   short: 'PUB-H',  countsTowardMandate: false, needsLocation: false, color: 'pubhol' },
     OPT_HOL: { label: 'Optional holiday', short: 'OPT-H',  countsTowardMandate: false, needsLocation: false, color: 'opthol' }
   };
-  const DEFAULT_LOCATIONS = ['Bangalore', 'Mangalore', 'Client Site', 'Head Office'];
+  const DEFAULT_LOCATIONS = ['Bangalore', 'Mangalore'];
 
   let entries = {};        // { "YYYY-MM-DD": { type: "WFO"|"WFH"|"FIELD"|"OTHER"|"LEAVE"|"PUB_HOL"|"OPT_HOL", location?: string, comment?: string } }
   let startDate = null;
   let locations = [];
   let userName = '';
+  let timeLog = {}; // { "YYYY-MM-DD": [{in: ms, out: ms|null}, ...] }
+  let timeTrackingEnabled = true;
   let viewYear, viewMonth;
   let toastTimer = null;
   let multiSelectMode = false;
@@ -708,14 +787,14 @@
       return {
         stampStyle: 'background:var(--wfo-blr);color:#fff;',
         cellBg: 'background:var(--wfo-blr-bg);',
-        cellBorder: 'border-color:#C4B5FD;'
+        cellBorder: 'border-color:#FCA5A5;'
       };
     }
     if (loc.includes('mangalore') || loc.includes('mangaluru')) {
       return {
         stampStyle: 'background:var(--wfo-mng);color:#fff;',
         cellBg: 'background:var(--wfo-mng-bg);',
-        cellBorder: 'border-color:#7DD3FC;'
+        cellBorder: 'border-color:#86EFAC;'
       };
     }
     return { stampStyle:'', cellBg:'', cellBorder:'' };
@@ -754,10 +833,28 @@
       locations = rawLoc ? JSON.parse(rawLoc) : DEFAULT_LOCATIONS.slice();
     } catch(e) { locations = DEFAULT_LOCATIONS.slice(); }
     if (!Array.isArray(locations) || locations.length === 0) locations = DEFAULT_LOCATIONS.slice();
+    try {
+      const rawTime = localStorage.getItem(LS_TIME);
+      timeLog = rawTime ? JSON.parse(rawTime) : {};
+    } catch(e) { timeLog = {}; }
+    const rawTT = localStorage.getItem(LS_TIME_TRACKING);
+    timeTrackingEnabled = rawTT === null ? true : rawTT === '1';
   }
   function saveEntries(){
     try { localStorage.setItem(LS_ENTRIES, JSON.stringify(entries)); }
     catch(e) { showToast('Could not save — storage may be full or blocked.'); }
+  }
+  function saveTimeLog(){
+    try { localStorage.setItem(LS_TIME, JSON.stringify(timeLog)); }
+    catch(e) { showToast('Could not save time log.'); }
+  }
+  function saveTimeTracking(enabled){
+    timeTrackingEnabled = enabled;
+    localStorage.setItem(LS_TIME_TRACKING, enabled ? '1' : '0');
+    if (!enabled) {
+      const w = document.getElementById('clock-widget');
+      if (w) w.remove();
+    }
   }
   function saveStartDate(dateStr){
     startDate = dateStr;
@@ -772,6 +869,25 @@
     localStorage.setItem(LS_NAME, userName);
   }
   function isOnboarded(){ return localStorage.getItem(LS_ONBOARDED) === '1'; }
+
+  // ---------- Time helpers ----------
+  function sessionsForDay(key){ return timeLog[key] || []; }
+
+  function totalMsForDay(key){
+    const sessions = sessionsForDay(key);
+    const now = Date.now();
+    return sessions.reduce((sum, s) => sum + ((s.out || now) - s.in), 0);
+  }
+
+  function formatDuration(ms, compact){
+    if (ms <= 0) return compact ? '0m' : '0m';
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (compact) return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
 
   // ---------- Quirky messages ----------
   const QUIPS = {
@@ -999,7 +1115,7 @@
         <div class="label-row"><span class="title">${MONTH_NAMES[today.getMonth()]} ${today.getFullYear()}</span><span class="target mono">target ${month.target}/mo</span></div>
         <div class="big-row"><span class="big-num">${month.wfo}</span><span class="big-of">/ ${month.target} qualifying</span></div>
         <div class="bar-track"><div class="bar-fill" style="width:${monthPct}%"></div></div>
-        <div class="sub-note">Office ${month.wfoOnly} · Field ${month.fieldCount} · Other ${month.otherCount} · WFH ${month.wfhCount} · Leave ${month.leaveCount} · Holidays ${month.pubHolCount + month.optHolCount}</div>
+        <div class="sub-note">Office ${month.wfoOnly} · WFH ${month.wfhCount} · Leave ${month.leaveCount} · Holidays ${month.pubHolCount + month.optHolCount}</div>
       </div>
     `;
   }
@@ -1047,10 +1163,16 @@
       const { cellBg, cellBorder } = wfoLocStyle(entry);
       const locStyle = (cellBg || cellBorder) ? ` style="${cellBg}${cellBorder}"` : '';
       const checkMark = (multiSelectMode && !weekend && !beforeStart) ? `<span class="select-check">${selectedDates.has(key) ? '✓' : ''}</span>` : '';
+      // Show time on WFO cells (only when time tracking is enabled)
+      const dayMs = (timeTrackingEnabled && entry && entry.type === 'WFO') ? totalMsForDay(key) : 0;
+      const timeLabel = dayMs > 0 ? `<span class="cell-time">${formatDuration(dayMs, true)}</span>` : '';
+      const liveDot = '';
       html += `<div class="${classes}" data-date="${key}" data-future="${isFuture ? '1' : ''}"${locStyle}>
         <span class="num">${day}</span>
         ${checkMark}
+        ${liveDot}
         ${stamp}
+        ${timeLabel}
       </div>`;
     }
     const totalCells = startOffset + daysInMonth;
@@ -1260,6 +1382,7 @@
             }, 500);
           });
         }
+        if (timeTrackingEnabled) bindTimeEditor();
       }
     }
 
@@ -1274,6 +1397,7 @@
             </select>
             <span class="add-location-link" id="add-location-link">+ Add new location</span>
           </div>
+          ${timeTrackingEnabled ? timeEditorHtml() : ''}
         `;
       }
       html += `
@@ -1283,6 +1407,45 @@
         </div>
       `;
       return html;
+    }
+
+    function timeEditorHtml(){
+      const totalMs = totalMsForDay(dateKey);
+      const totalHrs = totalMs > 0 ? (totalMs / 3600000).toFixed(1) : '';
+      return `
+        <div class="time-editor-wrap" id="time-editor-wrap">
+          <label class="hours-label" for="hours-input">Hours in office</label>
+          <div class="hours-input-row">
+            <input type="number" id="hours-input" class="hours-input" min="0.5" max="24" step="0.5" value="${totalHrs}" placeholder="e.g. 8" />
+            <span class="hours-unit">hrs</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindTimeEditor(){
+      const wrap = overlay.querySelector('#time-editor-wrap');
+      if (!wrap) return;
+      const input = wrap.querySelector('#hours-input');
+      if (!input) return;
+      function saveHours(){
+        const val = parseFloat(input.value);
+        if (isNaN(val) || val <= 0) {
+          delete timeLog[dateKey];
+        } else {
+          // Store as a single completed session spanning val hours from midnight
+          const base = parseKey(dateKey);
+          base.setHours(9, 0, 0, 0);
+          const inMs = base.getTime();
+          const outMs = inMs + Math.round(val * 3600000);
+          timeLog[dateKey] = [{ in: inMs, out: outMs }];
+        }
+        saveTimeLog();
+        renderCalendar();
+        renderReport();
+      }
+      input.addEventListener('change', saveHours);
+      input.addEventListener('blur', saveHours);
     }
 
     document.body.appendChild(overlay);
@@ -1329,15 +1492,33 @@
     const rows = months.map(({year, month}) => {
       const m = computeMonthStatus(year, month);
       if (m.beforeTrackingEntirely) {
-        return `<tr><td class="month-name">${MONTH_NAMES[month]} ${year}</td><td colspan="10" style="color:var(--ink-soft);font-family:'Inter',sans-serif;font-style:italic;">before tracking started</td></tr>`;
+        return `<tr><td class="month-name">${MONTH_NAMES[month]} ${year}</td><td colspan="9" style="color:var(--ink-soft);font-family:'Inter',sans-serif;font-style:italic;">before tracking started</td></tr>`;
       }
       if (m.wfo > 0 || m.wfhCount > 0 || m.leaveCount > 0 || m.pubHolCount > 0 || m.optHolCount > 0) anyData = true;
       const isCurrent = m.isCurrentMonth;
       const pct = m.totalWorkdays ? Math.min(100, (m.wfo / m.target) * 100) : 0;
 
+      // Compute total and average office time for this month
+      const monthStart = new Date(year, month, 1);
+      const monthEnd = new Date(year, month+1, 0);
+      let totalOfficeMs = 0;
+      let wfoDaysWithTime = 0;
+      const d = new Date(monthStart);
+      while (d <= monthEnd) {
+        const key = fmtKey(d);
+        if (entries[key] && entries[key].type === 'WFO') {
+          const ms = totalMsForDay(key);
+          if (ms > 0) { totalOfficeMs += ms; wfoDaysWithTime++; }
+        }
+        d.setDate(d.getDate() + 1);
+      }
+      const avgMs = wfoDaysWithTime > 0 ? totalOfficeMs / wfoDaysWithTime : 0;
+      const totalHrsLabel = totalOfficeMs > 0 ? formatDuration(totalOfficeMs, true) : '—';
+      const avgHrsLabel = avgMs > 0 ? formatDuration(avgMs, true) : '—';
+
       let pillClass, pillLabel;
       if (isCurrent) {
-        if (m.wfo >= m.target) { pillClass='met'; pillLabel='Smashing it!'; }
+        if (m.wfo >= m.target) { pillClass='met'; pillLabel='On track'; }
         else if (m.target - m.wfo > m.remainingWorkdays) { pillClass='short'; pillLabel='At risk'; }
         else { pillClass='partial'; pillLabel='In progress'; }
       } else {
@@ -1350,13 +1531,12 @@
         <tr class="${isCurrent?'current-row':''}">
           <td class="month-name">${MONTH_NAMES[month]} ${year}${isCurrent?' <span style="color:var(--ink-soft);font-weight:400;font-size:10px;">(current)</span>':''}</td>
           <td>${m.wfoOnly}</td>
-          <td>${m.fieldCount}</td>
-          <td>${m.otherCount}</td>
           <td>${m.wfhCount}</td>
           <td>${m.leaveCount}</td>
           <td>${m.pubHolCount}</td>
           <td>${m.optHolCount}</td>
           <td>${m.totalWorkdays}</td>
+          <td style="color:var(--ink-soft);">${avgHrsLabel}</td>
           <td><span class="mini-bar-track"><span class="mini-bar-fill" style="width:${pct}%;background:${barColor}"></span></span><span style="font-size:10.5px;color:var(--ink-soft);">${m.wfo}/${m.target}</span></td>
           <td><span class="pill ${pillClass}">${pillLabel}</span></td>
         </tr>
@@ -1364,7 +1544,7 @@
     });
 
     if (!anyData) {
-      tbody.innerHTML = `<tr><td colspan="11"><div class="empty-report">No entries logged yet. Mark a working day on the calendar above to start building your report.</div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty-report">No entries logged yet. Mark a working day on the calendar above to start building your report.</div></td></tr>`;
     } else {
       tbody.innerHTML = rows.join('');
     }
@@ -1372,7 +1552,7 @@
 
   // ---------- Export / Import ----------
   function exportData(){
-    const payload = { app: 'whereat', version: 2, exportedAt: new Date().toISOString(), startDate, locations, entries };
+    const payload = { app: 'whereat', version: 2, exportedAt: new Date().toISOString(), startDate, locations, entries, timeLog };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1409,6 +1589,14 @@
         });
         entries = Object.assign({}, entries, cleanEntries);
         saveEntries();
+        if (data.timeLog && typeof data.timeLog === 'object') {
+          Object.keys(data.timeLog).forEach(k => {
+            if (/^\d{4}-\d{2}-\d{2}$/.test(k) && Array.isArray(data.timeLog[k])) {
+              timeLog[k] = data.timeLog[k];
+            }
+          });
+          saveTimeLog();
+        }
         if (Array.isArray(data.locations)) {
           data.locations.forEach(loc => { if (loc && !locations.includes(loc)) locations.push(loc); });
           saveLocations();
@@ -1516,6 +1704,18 @@
         </div>
 
         <div class="settings-row">
+          <div class="settings-toggle-row">
+            <div>
+              <span class="row-title">Office time tracking</span>
+              <span class="row-desc">Show clock in/out widget, time on calendar cells, and hours in the monthly report.</span>
+            </div>
+            <button class="toggle-switch ${timeTrackingEnabled ? 'on' : ''}" id="toggle-time-tracking" role="switch" aria-checked="${timeTrackingEnabled}" title="${timeTrackingEnabled ? 'Disable' : 'Enable'} time tracking">
+              <span class="toggle-knob"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-row">
           <span class="row-title">Office locations</span>
           <span class="row-desc">Manage the locations available when logging a WFO day.</span>
           <div class="loc-list" id="loc-list-wrap"></div>
@@ -1564,6 +1764,16 @@
     document.getElementById('settings-name').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('settings-save-name').click();
     });
+    document.getElementById('toggle-time-tracking').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const newState = !timeTrackingEnabled;
+      saveTimeTracking(newState);
+      btn.classList.toggle('on', newState);
+      btn.setAttribute('aria-checked', newState);
+      btn.title = (newState ? 'Disable' : 'Enable') + ' time tracking';
+      renderAll();
+      showToast(`Office time tracking ${newState ? 'enabled' : 'disabled'}.`);
+    });
     document.getElementById('settings-save-start').addEventListener('click', () => {
       const val = document.getElementById('settings-start-date').value;
       if (val) { saveStartDate(val); renderAll(); showToast('Start date updated.'); overlay.remove(); }
@@ -1606,6 +1816,13 @@
     `;
   }
 
+  // ---------- Clock widget ----------
+  function renderClockWidget(){
+    // Clock widget removed — time is now entered as hours in the day picker
+    const existing = document.getElementById('clock-widget');
+    if (existing) existing.remove();
+  }
+
   function renderAll(){
     const { alerts, week, month, unlogged } = buildAlerts();
     renderQuip(week, month, unlogged);
@@ -1614,6 +1831,7 @@
     renderCalendar();
     renderReport();
     renderUserBadge();
+    renderClockWidget();
     const tag = document.getElementById('start-tag');
     if (tag) tag.textContent = startDate ? `Tracking since ${startDate}` : '';
   }
@@ -1688,7 +1906,7 @@
           <table class="report-table">
             <thead>
               <tr>
-                <th>Month</th><th>Office</th><th>Field</th><th>Other</th><th>WFH</th><th>Leave</th><th>Pub&nbsp;Hol</th><th>Opt&nbsp;Hol</th><th>Work&nbsp;days</th><th>vs target</th><th>Status</th>
+                <th>Month</th><th>Office</th><th>WFH</th><th>Leave</th><th>Pub&nbsp;Hol</th><th>Opt&nbsp;Hol</th><th>Work&nbsp;days</th><th>Avg&nbsp;Hrs/Day</th><th>vs target</th><th>Status</th>
               </tr>
             </thead>
             <tbody id="report-tbody"></tbody>
