@@ -621,12 +621,49 @@
     padding-top: 12px;
     border-top: 1px solid var(--line);
   }
+  .time-editor-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
   .hours-label {
-    display: block;
     font-size: 11px; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
     color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em;
-    margin-bottom: 6px;
   }
+  /* Mode toggle */
+  .time-mode-toggle {
+    display: flex; background: var(--paper); border: 1.5px solid var(--line-strong);
+    border-radius: 7px; overflow: hidden;
+  }
+  .tmode-btn {
+    border: none; background: none; padding: 4px 9px;
+    font-size: 10.5px; font-weight: 600; font-family: 'Inter', sans-serif;
+    color: var(--ink-soft); cursor: pointer; transition: background 0.12s, color 0.12s;
+  }
+  .tmode-btn.active { background: var(--ink); color: #fff; }
+  .tmode-btn:not(.active):hover { background: var(--line); }
+  /* Start/end time row */
+  .time-range-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .time-range-input {
+    flex: 1; min-width: 90px;
+    padding: 7px 9px;
+    font-size: 14px; font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--line-strong);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .time-range-input:focus { border-color: var(--wfo); }
+  .time-range-sep { font-size: 14px; color: var(--ink-soft); flex-shrink: 0; }
+  .time-dur-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700;
+    color: var(--wfo); background: var(--wfo-bg); border-radius: 5px; padding: 3px 7px;
+    flex-shrink: 0;
+  }
+  /* Total hours row */
   .hours-input-row {
     display: flex; align-items: center; gap: 8px;
   }
@@ -1409,43 +1446,138 @@
       return html;
     }
 
-    function timeEditorHtml(){
+    // Track which mode the time editor is in ('time' = start/end, 'hours' = total)
+    // Default: if we have a session with real in/out times (not anchored at 09:00 sentinel), show time mode
+    function getTimeEditorMode(){
+      const sessions = timeLog[dateKey];
+      if (sessions && sessions.length > 0) {
+        const s = sessions[0];
+        // If the stored session was entered as start/end, the 'in' time won't be exactly 09:00:00
+        if (s._mode === 'time') return 'time';
+        if (s._mode === 'hours') return 'hours';
+      }
+      return 'hours'; // default
+    }
+
+    function timeEditorHtml(mode){
+      mode = mode || getTimeEditorMode();
+      const sessions = timeLog[dateKey];
+      const s = sessions && sessions.length ? sessions[0] : null;
       const totalMs = totalMsForDay(dateKey);
-      const totalHrs = totalMs > 0 ? (totalMs / 3600000).toFixed(1) : '';
+
+      // Derive displayed values
+      let startVal = '', endVal = '', hoursVal = '';
+      if (s) {
+        if (mode === 'time') {
+          startVal = s.in  ? msToHHMM(s.in)  : '';
+          endVal   = s.out ? msToHHMM(s.out) : '';
+        } else {
+          hoursVal = totalMs > 0 ? (totalMs / 3600000).toFixed(1) : '';
+        }
+      }
+
+      const durLabel = (mode === 'time' && s && s.in && s.out)
+        ? `<span class="time-dur-badge">${formatDuration(s.out - s.in, true)}</span>` : '';
+
       return `
-        <div class="time-editor-wrap" id="time-editor-wrap">
-          <label class="hours-label" for="hours-input">Hours in office</label>
-          <div class="hours-input-row">
-            <input type="number" id="hours-input" class="hours-input" min="0.5" max="24" step="0.5" value="${totalHrs}" placeholder="e.g. 8" />
-            <span class="hours-unit">hrs</span>
+        <div class="time-editor-wrap" id="time-editor-wrap" data-mode="${mode}">
+          <div class="time-editor-header">
+            <span class="hours-label">Time in office</span>
+            <div class="time-mode-toggle">
+              <button class="tmode-btn ${mode==='time'?'active':''}" data-mode="time">Start / End</button>
+              <button class="tmode-btn ${mode==='hours'?'active':''}" data-mode="hours">Total hrs</button>
+            </div>
           </div>
+          ${mode === 'time' ? `
+            <div class="time-range-row">
+              <input type="time" id="time-start" class="time-range-input" value="${startVal}" placeholder="09:00" />
+              <span class="time-range-sep">→</span>
+              <input type="time" id="time-end"   class="time-range-input" value="${endVal}"   placeholder="18:00" />
+              ${durLabel}
+            </div>
+          ` : `
+            <div class="hours-input-row">
+              <input type="number" id="hours-input" class="hours-input" min="0.5" max="24" step="0.5" value="${hoursVal}" placeholder="e.g. 8" />
+              <span class="hours-unit">hrs</span>
+            </div>
+          `}
         </div>
       `;
+    }
+
+    // "YYYY-MM-DD" + "HH:MM" → epoch ms
+    function hmToMs(dateKey, hhmm){
+      if (!hhmm) return null;
+      const [h, m] = hhmm.split(':').map(Number);
+      const d = parseKey(dateKey);
+      d.setHours(h, m, 0, 0);
+      return d.getTime();
+    }
+    // epoch ms → "HH:MM"
+    function msToHHMM(ms){
+      const d = new Date(ms);
+      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    function saveTimeRange(startHHMM, endHHMM){
+      const inMs  = hmToMs(dateKey, startHHMM);
+      const outMs = hmToMs(dateKey, endHHMM);
+      if (!inMs && !outMs) { delete timeLog[dateKey]; }
+      else {
+        if (outMs && inMs && outMs <= inMs) { showToast('End time must be after start time.'); return false; }
+        timeLog[dateKey] = [{ in: inMs, out: outMs || null, _mode: 'time' }];
+      }
+      saveTimeLog(); renderCalendar(); renderReport();
+      return true;
+    }
+
+    function saveHoursTotal(val){
+      const hrs = parseFloat(val);
+      if (isNaN(hrs) || hrs <= 0) {
+        delete timeLog[dateKey];
+      } else {
+        const base = parseKey(dateKey);
+        base.setHours(9, 0, 0, 0);
+        const inMs = base.getTime();
+        timeLog[dateKey] = [{ in: inMs, out: inMs + Math.round(hrs * 3600000), _mode: 'hours' }];
+      }
+      saveTimeLog(); renderCalendar(); renderReport();
+    }
+
+    function rerenderTimeEditor(mode){
+      const wrap = overlay.querySelector('#time-editor-wrap');
+      if (!wrap) return;
+      const parent = wrap.parentNode;
+      const tmp = document.createElement('div');
+      tmp.innerHTML = timeEditorHtml(mode);
+      parent.replaceChild(tmp.firstElementChild, wrap);
+      bindTimeEditor();
     }
 
     function bindTimeEditor(){
       const wrap = overlay.querySelector('#time-editor-wrap');
       if (!wrap) return;
-      const input = wrap.querySelector('#hours-input');
-      if (!input) return;
-      function saveHours(){
-        const val = parseFloat(input.value);
-        if (isNaN(val) || val <= 0) {
-          delete timeLog[dateKey];
-        } else {
-          // Store as a single completed session spanning val hours from midnight
-          const base = parseKey(dateKey);
-          base.setHours(9, 0, 0, 0);
-          const inMs = base.getTime();
-          const outMs = inMs + Math.round(val * 3600000);
-          timeLog[dateKey] = [{ in: inMs, out: outMs }];
+      const mode = wrap.dataset.mode;
+
+      // Mode toggle buttons
+      wrap.querySelectorAll('.tmode-btn').forEach(btn => {
+        btn.addEventListener('click', () => rerenderTimeEditor(btn.dataset.mode));
+      });
+
+      if (mode === 'time') {
+        const startEl = wrap.querySelector('#time-start');
+        const endEl   = wrap.querySelector('#time-end');
+        function trySaveRange(){
+          saveTimeRange(startEl ? startEl.value : '', endEl ? endEl.value : '');
+          rerenderTimeEditor('time');
         }
-        saveTimeLog();
-        renderCalendar();
-        renderReport();
+        if (startEl) { startEl.addEventListener('change', trySaveRange); }
+        if (endEl)   { endEl.addEventListener('change', trySaveRange); }
+      } else {
+        const input = wrap.querySelector('#hours-input');
+        function doSave(){ saveHoursTotal(input ? input.value : ''); }
+        if (input) { input.addEventListener('change', doSave); input.addEventListener('blur', doSave); }
       }
-      input.addEventListener('change', saveHours);
-      input.addEventListener('blur', saveHours);
     }
 
     document.body.appendChild(overlay);
