@@ -1443,7 +1443,7 @@
       const sessions = timeLog[key] || [];
       if (!sessions.length) return { start: '', end: '' };
       const s = sessions[0];
-      if (s.in && s.out) return { start: msToTimeInput(s.in), end: msToTimeInput(s.out) };
+      if (s.in) return { start: msToTimeInput(s.in), end: s.out ? msToTimeInput(s.out) : '' };
       return { start: '', end: '' };
     }
 
@@ -1528,11 +1528,29 @@
         if (startMs && endMs) {
           if (endMs <= startMs) { showToast('End must be after start.'); return; }
           timeLog[dateKey] = [{ in: startMs, out: endMs }];
+        } else if (startMs) {
+          // Partial — keep start, clear end
+          timeLog[dateKey] = [{ in: startMs, out: null }];
         } else {
           delete timeLog[dateKey];
         }
         saveTimeLog();
-        rerenderTimeEditor();
+        // Update duration badge without rebuilding the whole editor
+        // (rebuilding would reset the input the user just typed into)
+        const durBadge = wrap.querySelector('.time-dur-badge');
+        const durMs = (startMs && endMs) ? (endMs - startMs) : 0;
+        if (durBadge) {
+          durBadge.textContent = durMs > 0 ? formatDuration(durMs, true) : '';
+        } else if (durMs > 0) {
+          // Badge didn't exist yet — append it
+          const rangeRow = wrap.querySelector('.time-range-row');
+          if (rangeRow) {
+            const badge = document.createElement('span');
+            badge.className = 'time-dur-badge';
+            badge.textContent = formatDuration(durMs, true);
+            rangeRow.appendChild(badge);
+          }
+        }
         renderCalendar();
         renderReport();
       }
