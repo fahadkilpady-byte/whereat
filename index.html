@@ -37,8 +37,8 @@
     --leave: #B45309;
     --leave-bg: #FEF3C7;
     /* Public holiday — vivid rose */
-    --pubhol: #C2410C;          /* deep orange — distinct from Bangalore crimson */
-    --pubhol-bg: #FFEDD5;
+    --pubhol: #E11D48;
+    --pubhol-bg: #FFE4E6;
     /* Optional holiday — slate blue */
     --opthol: #4F46E5;
     --opthol-bg: #EEF2FF;
@@ -225,9 +225,6 @@
     padding: 14px 14px 16px;
     box-shadow: var(--shadow-sm);
     margin-bottom: 22px;
-    max-width: 460px;
-    margin-left: auto;
-    margin-right: auto;
   }
   .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .cal-nav .month-label { font-size: 15px; font-weight: 700; }
@@ -312,7 +309,7 @@
   .day-cell.set-OTHER .stamp { background: var(--other); color: #fff; }
   .day-cell.set-LEAVE { background: var(--leave-bg); border-color: #FCD34D; }
   .day-cell.set-LEAVE .stamp { background: var(--leave); color: #fff; }
-  .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #FDBA74; }
+  .day-cell.set-PUB_HOL { background: var(--pubhol-bg); border-color: #FDA4AF; }
   .day-cell.set-PUB_HOL .stamp { background: var(--pubhol); color: #fff; }
   .day-cell.set-OPT_HOL { background: var(--opthol-bg); border-color: #A5B4FC; }
   .day-cell.set-OPT_HOL .stamp { background: var(--opthol); color: #fff; }
@@ -413,7 +410,7 @@
   .picker-opt.other-opt .dot { background: var(--other); }
   .picker-opt.leave-opt.active { background: var(--leave-bg); border-color: var(--leave); color: #92400E; }
   .picker-opt.leave-opt .dot { background: var(--leave); }
-  .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #9A3412; }
+  .picker-opt.pubhol-opt.active { background: var(--pubhol-bg); border-color: var(--pubhol); color: #9F1239; }
   .picker-opt.pubhol-opt .dot { background: var(--pubhol); }
   .picker-opt.opthol-opt.active { background: var(--opthol-bg); border-color: var(--opthol); color: #3730A3; }
   .picker-opt.opthol-opt .dot { background: var(--opthol); }
@@ -440,48 +437,6 @@
   textarea.comment-input:focus, select.office-select:focus, input:focus { outline: 2px solid var(--wfo); outline-offset: 1px; }
 
   /* Time editor inside picker */
-  .time-editor-wrap {
-    margin-top: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px;
-  }
-  .time-editor-header {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-  }
-  .time-editor-header label {
-    font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); font-weight: 600;
-  }
-  .time-total-label { font-size: 11px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
-  .time-total-label b { color: var(--wfo); }
-  .time-sessions-list { display: flex; flex-direction: column; gap: 6px; }
-  .time-sess-row {
-    display: flex; align-items: center; gap: 5px; flex-wrap: nowrap;
-  }
-  .time-sess-num {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft);
-    min-width: 16px; font-weight: 700;
-  }
-  input.time-in-input, input.time-out-input {
-    flex: 1; min-width: 0; padding: 5px 6px; border-radius: 6px; border: 1.5px solid var(--line-strong);
-    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink); background: var(--paper-raised);
-  }
-  input.time-in-input { border-color: #86EFAC; }
-  input.time-out-input { border-color: #FDA4AF; }
-  .time-sep { font-size: 10px; color: var(--unset); flex-shrink: 0; }
-  .time-sess-dur {
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--wfo); font-weight: 700;
-    min-width: 28px; text-align: right; flex-shrink: 0;
-  }
-  .time-del-btn {
-    border: none; background: none; color: var(--alert); cursor: pointer; font-size: 12px;
-    padding: 2px 4px; border-radius: 4px; flex-shrink: 0;
-  }
-  .time-del-btn:hover { background: var(--alert-bg); }
-  .time-add-btn {
-    width: 100%; margin-top: 8px; border: 1.5px dashed var(--line-strong); background: none; border-radius: 7px;
-    padding: 7px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--good);
-    font-family: 'Inter', sans-serif;
-  }
-  .time-add-btn:hover { background: var(--good-bg); border-color: var(--good); }
-  .time-no-sessions { font-size: 11px; color: var(--ink-soft); font-style: italic; padding: 2px 0; }
 
   .picker-save-row { display: flex; gap: 8px; margin-top: 14px; }
   .picker-clear {
@@ -600,15 +555,16 @@
   .report-header h2 { margin: 0; font-size: 15.5px; font-weight: 700; }
   .report-header .note { font-size: 11px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
 
-  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -2px; }
-  table.report-table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 12px; }
+  .table-scroll { margin: 0 -2px; }
+  table.report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   table.report-table th {
     text-align: left; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft);
-    font-weight: 600; padding: 0 6px 7px; border-bottom: 1.5px solid var(--ink); white-space: nowrap;
+    font-weight: 600; padding: 0 6px 7px; border-bottom: 1.5px solid var(--ink); white-space: normal; word-break: break-word; min-width: 36px;
   }
   table.report-table td {
     padding: 8px 6px; border-bottom: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; white-space: nowrap;
   }
+  table.report-table td.avg-hrs-low { color: #DC2626; font-weight: 700; }
   table.report-table td.month-name {
     font-family: 'Inter', sans-serif; font-weight: 600; position: sticky; left: 0; background: var(--paper-raised);
   }
@@ -657,90 +613,54 @@
     50%       { opacity: 0.5; transform: scale(0.7); }
   }
 
-  /* ---------- Clock widget ---------- */
-  .clock-widget {
-    position: fixed;
-    bottom: 20px;
-    right: 16px;
-    z-index: 65;
-    background: var(--paper-raised);
-    border: 1.5px solid var(--line-strong);
-    border-radius: 14px;
-    padding: 12px 14px;
-    width: 220px;
-    box-shadow: 0 8px 28px rgba(17,24,39,0.14);
-    animation: toastIn 0.25s ease;
+  /* ---------- Hours input (in day picker) ---------- */
+  .time-editor-wrap {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
   }
-  .clock-widget.clocked-in {
-    border-color: var(--good);
-    box-shadow: 0 0 0 2px rgba(22,163,74,0.15), 0 8px 28px rgba(17,24,39,0.14);
+  .time-editor-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
   }
-  .clock-header { display: flex; flex-direction: column; gap: 8px; }
-  .clock-title-row {
-    display: flex; align-items: center; gap: 6px;
+  .hours-label {
+    font-size: 11px; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.06em;
   }
-  .clock-icon { font-size: 11px; line-height: 1; }
-  .clock-title {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10.5px; font-weight: 700; color: var(--ink); flex: 1;
-    letter-spacing: 0.02em; text-transform: uppercase;
+  .time-mode-toggle {
+    display: flex; background: var(--paper); border: 1.5px solid var(--line-strong);
+    border-radius: 7px; overflow: hidden;
   }
-  .clock-toggle-btn {
-    background: none; border: none; cursor: pointer; color: var(--ink-soft);
-    font-size: 13px; padding: 2px 4px; border-radius: 4px;
+  .tmode-btn {
+    border: none; background: none; padding: 4px 9px;
+    font-size: 10.5px; font-weight: 600; font-family: 'Inter', sans-serif;
+    color: var(--ink-soft); cursor: pointer; transition: background 0.12s, color 0.12s;
   }
-  .clock-toggle-btn:hover { background: var(--paper); }
-  .clock-elapsed-wrap, .clock-total-wrap {
-    display: flex; align-items: baseline; gap: 5px;
+  .tmode-btn.active { background: var(--ink); color: #fff; }
+  .tmode-btn:not(.active):hover { background: var(--line); }
+  .time-range-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   }
-  .clock-elapsed {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 22px; font-weight: 700; color: var(--good); line-height: 1;
-    letter-spacing: 0.02em;
+  .time-range-input {
+    flex: 1; min-width: 90px; padding: 7px 9px;
+    font-size: 14px; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink); background: var(--paper);
+    border: 1.5px solid var(--line-strong); border-radius: 8px; outline: none;
+    transition: border-color 0.15s;
   }
-  .clock-total {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 22px; font-weight: 700; color: var(--wfo); line-height: 1;
+  .time-range-input:focus { border-color: var(--wfo); }
+  .time-range-sep { font-size: 14px; color: var(--ink-soft); flex-shrink: 0; }
+  .time-dur-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700;
+    color: var(--wfo); background: var(--wfo-bg); border-radius: 5px; padding: 3px 7px; flex-shrink: 0;
   }
-  .clock-elapsed-label {
-    font-size: 10px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace;
+  .hours-input-row { display: flex; align-items: center; gap: 8px; }
+  .hours-input {
+    width: 80px; padding: 7px 10px;
+    font-size: 16px; font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink); background: var(--paper);
+    border: 1.5px solid var(--line-strong); border-radius: 8px; outline: none;
+    transition: border-color 0.15s;
   }
-  .clock-hint {
-    font-size: 11px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-style: italic;
-  }
-  .clock-in-btn, .clock-out-btn {
-    width: 100%; border: none; border-radius: 8px; padding: 9px;
-    font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
-    transition: background 0.15s;
-  }
-  .clock-in-btn { background: var(--good); color: #fff; }
-  .clock-in-btn:hover { background: #15803D; }
-  .clock-out-btn { background: var(--alert); color: #fff; }
-  .clock-out-btn:hover { background: #B91C1C; }
-  .clock-sessions {
-    border-top: 1px solid var(--line); margin-top: 10px; padding-top: 8px;
-    display: flex; flex-direction: column; gap: 5px;
-    max-height: 130px; overflow-y: auto;
-  }
-  .clock-session-row {
-    display: flex; align-items: center; gap: 4px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft);
-    flex-wrap: wrap;
-  }
-  .clock-sess-num { font-weight: 700; color: var(--ink-soft); min-width: 14px; }
-  .clock-sess-in { color: var(--good); font-weight: 600; }
-  .clock-sess-out { color: var(--alert); font-weight: 600; }
-  .clock-sess-arrow { color: var(--unset); }
-  .clock-sess-dur { color: var(--wfo); font-weight: 700; margin-left: 2px; }
-  .clock-sess-live {
-    background: var(--good); color: #fff; font-size: 8px; font-weight: 700;
-    padding: 1px 4px; border-radius: 3px; animation: pulse 1.4s ease infinite;
-  }
-  .clock-no-sess { font-size: 10.5px; color: var(--ink-soft); font-style: italic; }
-  @media (max-width: 480px) {
-    .clock-widget { right: 8px; bottom: 70px; width: 190px; }
-    .clock-elapsed, .clock-total { font-size: 18px; }
-  }
+  .hours-input:focus { border-color: var(--wfo); }
+  .hours-unit { font-size: 13px; font-weight: 600; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; }
 
   .toast {
     position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper-raised);
@@ -823,7 +743,8 @@
   const WEEKLY_TARGET = 3;
   const MONTHLY_TARGET = 12;
   const WEEKDAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MONTH_NAMES_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const LS_ENTRIES = 'wfo_tracker_entries_v2';
   const LS_START_DATE = 'wfo_tracker_start_date';
   const LS_ONBOARDED = 'wfo_tracker_onboarded';
@@ -849,7 +770,6 @@
   let locations = [];
   let userName = '';
   let timeLog = {}; // { "YYYY-MM-DD": [{in: ms, out: ms|null}, ...] }
-  let clockTickTimer = null;
   let timeTrackingEnabled = true;
   let viewYear, viewMonth;
   let toastTimer = null;
@@ -947,10 +867,7 @@
     timeTrackingEnabled = enabled;
     localStorage.setItem(LS_TIME_TRACKING, enabled ? '1' : '0');
     if (!enabled) {
-      // Stop live clock if running
-      clearInterval(clockTickTimer); clockTickTimer = null;
-      const w = document.getElementById('clock-widget');
-      if (w) w.remove();
+      // nothing extra needed
     }
   }
   function saveStartDate(dateStr){
@@ -972,13 +889,13 @@
 
   function totalMsForDay(key){
     const sessions = sessionsForDay(key);
-    const now = Date.now();
-    return sessions.reduce((sum, s) => sum + ((s.out || now) - s.in), 0);
-  }
-
-  function isCurrentlyClockedIn(key){
-    const sessions = sessionsForDay(key);
-    return sessions.length > 0 && sessions[sessions.length - 1].out == null;
+    if (!sessions.length) return 0;
+    // Support {hours} format (direct decimal hours entry)
+    if (sessions[0].hours != null) return sessions[0].hours * 3600000;
+    return sessions.reduce((sum, s) => {
+      if (s.in && s.out) return sum + (s.out - s.in);
+      return sum;
+    }, 0);
   }
 
   function formatDuration(ms, compact){
@@ -986,49 +903,8 @@
     const totalSec = Math.floor(ms / 1000);
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
     if (compact) return h > 0 ? `${h}h ${m}m` : `${m}m`;
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }
-
-  function clockIn(key){
-    if (!timeLog[key]) timeLog[key] = [];
-    if (isCurrentlyClockedIn(key)) return; // already in
-    timeLog[key].push({ in: Date.now(), out: null });
-    saveTimeLog();
-    startClockTick();
-    renderClockWidget();
-    renderCalendar();
-  }
-
-  function clockOut(key){
-    const sessions = timeLog[key];
-    if (!sessions || !sessions.length) return;
-    const last = sessions[sessions.length - 1];
-    if (last.out != null) return; // already out
-    last.out = Date.now();
-    saveTimeLog();
-    stopClockTickIfIdle();
-    renderClockWidget();
-    renderCalendar();
-    renderReport();
-  }
-
-  function startClockTick(){
-    if (clockTickTimer) return;
-    clockTickTimer = setInterval(() => {
-      const el = document.getElementById('clock-elapsed');
-      if (el && isCurrentlyClockedIn(todayKey)) {
-        el.textContent = formatDuration(totalMsForDay(todayKey), false);
-      }
-    }, 1000);
-  }
-
-  function stopClockTickIfIdle(){
-    if (!isCurrentlyClockedIn(todayKey)) {
-      clearInterval(clockTickTimer);
-      clockTickTimer = null;
-    }
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
   }
 
   // ---------- Quirky messages ----------
@@ -1188,9 +1064,9 @@
 
     const monthNeeded = month.target - month.wfo;
     if (month.wfo >= month.target) {
-      alerts.push({ type:'good', glyph:'✓', html:`<b>Monthly mandate met.</b> ${month.wfo} of ${month.target} qualifying days logged for ${MONTH_NAMES[today.getMonth()]}.` });
+      alerts.push({ type:'good', glyph:'✓', html:`<b>Monthly mandate met.</b> ${month.wfo} of ${month.target} qualifying days logged for ${MONTH_NAMES_FULL[today.getMonth()]}.` });
     } else if (monthNeeded > month.remainingWorkdays) {
-      alerts.push({ type:'danger', glyph:'!', html:`<b>Monthly target at risk.</b> Need ${monthNeeded} more qualifying days but only ${month.remainingWorkdays} working day${month.remainingWorkdays!==1?'s':''} remain in ${MONTH_NAMES[today.getMonth()]}.` });
+      alerts.push({ type:'danger', glyph:'!', html:`<b>Monthly target at risk.</b> Need ${monthNeeded} more qualifying days but only ${month.remainingWorkdays} working day${month.remainingWorkdays!==1?'s':''} remain in ${MONTH_NAMES_FULL[today.getMonth()]}.` });
     } else if (monthNeeded > 0) {
       alerts.push({ type:'info', glyph:'·', html:`<b>${monthNeeded} day${monthNeeded>1?'s':''} needed</b> to hit this month's target of ${month.target} (${month.remainingWorkdays} working day${month.remainingWorkdays!==1?'s':''} remaining).` });
     }
@@ -1254,17 +1130,17 @@
         <div class="sub-note">${week.workdaysElapsed} of ${week.totalWorkdaysInWeek} working days elapsed this week</div>
       </div>
       <div class="status-card ${monthClass}">
-        <div class="label-row"><span class="title">${MONTH_NAMES[today.getMonth()]} ${today.getFullYear()}</span><span class="target mono">target ${month.target}/mo</span></div>
+        <div class="label-row"><span class="title">${MONTH_NAMES_FULL[today.getMonth()]} ${today.getFullYear()}</span><span class="target mono">target ${month.target}/mo</span></div>
         <div class="big-row"><span class="big-num">${month.wfo}</span><span class="big-of">/ ${month.target} qualifying</span></div>
         <div class="bar-track"><div class="bar-fill" style="width:${monthPct}%"></div></div>
-        <div class="sub-note">Office ${month.wfoOnly} · Field ${month.fieldCount} · Other ${month.otherCount} · WFH ${month.wfhCount} · Leave ${month.leaveCount} · Holidays ${month.pubHolCount + month.optHolCount}</div>
+        <div class="sub-note">Office ${month.wfoOnly} · WFH ${month.wfhCount} · Leave ${month.leaveCount} · Holidays ${month.pubHolCount + month.optHolCount}</div>
       </div>
     `;
   }
 
   // ---------- Render: Calendar ----------
   function renderCalendar(){
-    document.getElementById('month-label').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+    document.getElementById('month-label').textContent = `${MONTH_NAMES_FULL[viewMonth]} ${viewYear}`;
     const grid = document.getElementById('cal-grid');
     const firstOfMonth = new Date(viewYear, viewMonth, 1);
     const startOffset = (firstOfMonth.getDay() + 6) % 7;
@@ -1308,7 +1184,7 @@
       // Show time on WFO cells (only when time tracking is enabled)
       const dayMs = (timeTrackingEnabled && entry && entry.type === 'WFO') ? totalMsForDay(key) : 0;
       const timeLabel = dayMs > 0 ? `<span class="cell-time">${formatDuration(dayMs, true)}</span>` : '';
-      const liveDot = (timeTrackingEnabled && entry && entry.type === 'WFO' && isCurrentlyClockedIn(key)) ? `<span class="live-dot"></span>` : '';
+      const liveDot = '';
       html += `<div class="${classes}" data-date="${key}" data-future="${isFuture ? '1' : ''}"${locStyle}>
         <span class="num">${day}</span>
         ${checkMark}
@@ -1551,38 +1427,24 @@
       return html;
     }
 
-    function timeEditorHtml(){
-      const sessions = sessionsForDay(dateKey);
-      const totalMs = totalMsForDay(dateKey);
-      const sessionRows = sessions.map((s, i) => {
-        const inVal  = s.in  ? msToTimeInput(s.in)  : '';
-        const outVal = s.out ? msToTimeInput(s.out) : '';
-        return `
-          <div class="time-sess-row" data-idx="${i}">
-            <span class="time-sess-num">#${i+1}</span>
-            <input type="time" class="time-in-input"  data-idx="${i}" value="${inVal}"  placeholder="In"  />
-            <span class="time-sep">→</span>
-            <input type="time" class="time-out-input" data-idx="${i}" value="${outVal}" placeholder="Out" />
-            <span class="time-sess-dur">${s.in && s.out ? formatDuration(s.out - s.in, true) : (s.in && !s.out ? 'live' : '')}</span>
-            <button class="time-del-btn" data-idx="${i}" title="Remove session">✕</button>
-          </div>
-        `;
-      }).join('');
+    // Retrieve stored hours for the day (decimal, e.g. 8.5)
+    function getStoredHours(key){
+      const sessions = timeLog[key] || [];
+      if (!sessions.length) return null;
+      const s = sessions[0];
+      // stored as {hours: number} or as {in, out} timestamps
+      if (s.hours != null) return s.hours;
+      if (s.in && s.out) return (s.out - s.in) / 3600000;
+      return null;
+    }
 
-      const totalLabel = totalMs > 0 ? `<span class="time-total-label">Total: <b>${formatDuration(totalMs, true)}</b></span>` : '';
-
-      return `
-        <div class="time-editor-wrap" id="time-editor-wrap">
-          <div class="time-editor-header">
-            <label>Office time</label>
-            ${totalLabel}
-          </div>
-          <div class="time-sessions-list" id="time-sessions-list">
-            ${sessionRows || '<div class="time-no-sessions">No sessions yet</div>'}
-          </div>
-          <button class="time-add-btn" id="time-add-btn">+ Add session</button>
-        </div>
-      `;
+    // Retrieve stored start/end for the day
+    function getStoredRange(key){
+      const sessions = timeLog[key] || [];
+      if (!sessions.length) return { start: '', end: '' };
+      const s = sessions[0];
+      if (s.in && s.out) return { start: msToTimeInput(s.in), end: msToTimeInput(s.out) };
+      return { start: '', end: '' };
     }
 
     // Convert a ms timestamp to "HH:MM" for <input type="time">
@@ -1600,85 +1462,98 @@
       return base.getTime();
     }
 
+    // Current mode stored in closure
+    let _timeMode = 'range'; // 'range' | 'hours'
+
+    function timeEditorHtml(){
+      const totalMs = totalMsForDay(dateKey);
+      const hrs = getStoredHours(dateKey);
+      const range = getStoredRange(dateKey);
+
+      // Determine initial mode: if we have timestamps use range, else hours
+      const sessions = timeLog[dateKey] || [];
+      if (sessions.length && sessions[0].hours != null) _timeMode = 'hours';
+      else if (sessions.length && sessions[0].in) _timeMode = 'range';
+
+      const durMs = (range.start && range.end) ? (timeInputToMs(range.end) - timeInputToMs(range.start)) : 0;
+      const durLabel = _timeMode === 'range' && durMs > 0
+        ? `<span class="time-dur-badge">${formatDuration(durMs, true)}</span>` : '';
+
+      const hoursVal = _timeMode === 'hours' ? (hrs != null ? hrs : '') : '';
+      const rangeStartVal = _timeMode === 'range' ? range.start : '';
+      const rangeEndVal   = _timeMode === 'range' ? range.end   : '';
+
+      return `
+        <div class="time-editor-wrap" id="time-editor-wrap">
+          <div class="time-editor-header">
+            <span class="hours-label">Office Hours</span>
+            <div class="time-mode-toggle">
+              <button class="tmode-btn ${_timeMode==='range'?'active':''}" data-mode="range">Start / End</button>
+              <button class="tmode-btn ${_timeMode==='hours'?'active':''}" data-mode="hours">Total hrs</button>
+            </div>
+          </div>
+          ${_timeMode === 'range' ? `
+          <div class="time-range-row">
+            <input type="time" class="time-range-input" id="time-start" value="${rangeStartVal}" placeholder="09:00" />
+            <span class="time-range-sep">→</span>
+            <input type="time" class="time-range-input" id="time-end" value="${rangeEndVal}" placeholder="18:00" />
+            ${durLabel}
+          </div>` : `
+          <div class="hours-input-row">
+            <input type="number" class="hours-input" id="hours-input" value="${hoursVal}" min="0" max="24" step="0.5" placeholder="8" />
+            <span class="hours-unit">hrs</span>
+          </div>`}
+        </div>
+      `;
+    }
+
     function bindTimeEditor(){
       const wrap = overlay.querySelector('#time-editor-wrap');
       if (!wrap) return;
 
-      // Bind in/out time inputs — save on blur
-      wrap.querySelectorAll('.time-in-input').forEach(input => {
-        input.addEventListener('change', () => {
-          const idx = Number(input.dataset.idx);
-          const sessions = timeLog[dateKey] || [];
-          if (!sessions[idx]) return;
-          const ms = timeInputToMs(input.value);
-          if (ms == null) return;
-          // Don't allow in after out
-          if (sessions[idx].out && ms >= sessions[idx].out) {
-            showToast('Clock-in must be before clock-out.'); input.value = msToTimeInput(sessions[idx].in); return;
-          }
-          sessions[idx].in = ms;
-          timeLog[dateKey] = sessions;
-          saveTimeLog();
-          renderClockWidget();
-          rerenderTimeEditor();
-        });
-      });
-
-      wrap.querySelectorAll('.time-out-input').forEach(input => {
-        input.addEventListener('change', () => {
-          const idx = Number(input.dataset.idx);
-          const sessions = timeLog[dateKey] || [];
-          if (!sessions[idx]) return;
-          const ms = timeInputToMs(input.value);
-          if (ms == null) return;
-          if (ms <= sessions[idx].in) {
-            showToast('Clock-out must be after clock-in.'); input.value = sessions[idx].out ? msToTimeInput(sessions[idx].out) : ''; return;
-          }
-          sessions[idx].out = ms;
-          timeLog[dateKey] = sessions;
-          saveTimeLog();
-          renderClockWidget();
-          rerenderTimeEditor();
-        });
-      });
-
-      // Delete session
-      wrap.querySelectorAll('.time-del-btn').forEach(btn => {
+      // Mode toggle
+      wrap.querySelectorAll('.tmode-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const idx = Number(btn.dataset.idx);
-          const sessions = timeLog[dateKey] || [];
-          sessions.splice(idx, 1);
-          if (sessions.length === 0) delete timeLog[dateKey];
-          else timeLog[dateKey] = sessions;
-          saveTimeLog();
-          stopClockTickIfIdle();
-          renderClockWidget();
+          _timeMode = btn.dataset.mode;
           rerenderTimeEditor();
-          renderCalendar();
         });
       });
 
-      // Add session
-      const addBtn = wrap.querySelector('#time-add-btn');
-      if (addBtn) addBtn.addEventListener('click', () => {
-        if (!timeLog[dateKey]) timeLog[dateKey] = [];
-        // Default: now if today, otherwise 09:00 → 17:00
-        const isToday = dateKey === todayKey;
-        const base = parseKey(dateKey);
-        let inMs, outMs;
-        if (isToday) {
-          inMs = Date.now();
-          outMs = null;
+      // Start/End mode
+      const startInput = wrap.querySelector('#time-start');
+      const endInput   = wrap.querySelector('#time-end');
+      function saveRange(){
+        const startMs = startInput ? timeInputToMs(startInput.value) : null;
+        const endMs   = endInput   ? timeInputToMs(endInput.value)   : null;
+        if (startMs && endMs) {
+          if (endMs <= startMs) { showToast('End must be after start.'); return; }
+          timeLog[dateKey] = [{ in: startMs, out: endMs }];
         } else {
-          base.setHours(9, 0, 0, 0); inMs = base.getTime();
-          const out = parseKey(dateKey); out.setHours(17, 0, 0, 0); outMs = out.getTime();
+          delete timeLog[dateKey];
         }
-        timeLog[dateKey].push({ in: inMs, out: outMs });
         saveTimeLog();
-        renderClockWidget();
         rerenderTimeEditor();
         renderCalendar();
-      });
+        renderReport();
+      }
+      if (startInput) startInput.addEventListener('change', saveRange);
+      if (endInput)   endInput.addEventListener('change', saveRange);
+
+      // Total hours mode
+      const hoursInput = wrap.querySelector('#hours-input');
+      if (hoursInput){
+        hoursInput.addEventListener('change', () => {
+          const v = parseFloat(hoursInput.value);
+          if (!isNaN(v) && v > 0) {
+            timeLog[dateKey] = [{ hours: v }];
+          } else {
+            delete timeLog[dateKey];
+          }
+          saveTimeLog();
+          renderCalendar();
+          renderReport();
+        });
+      }
     }
 
     function rerenderTimeEditor(){
@@ -1690,8 +1565,6 @@
       newHtml.innerHTML = timeEditorHtml();
       parent.replaceChild(newHtml.firstElementChild, wrap);
       bindTimeEditor();
-      // Also refresh the total label in the header
-      renderClockWidget();
       renderCalendar();
     }
 
@@ -1739,7 +1612,7 @@
     const rows = months.map(({year, month}) => {
       const m = computeMonthStatus(year, month);
       if (m.beforeTrackingEntirely) {
-        return `<tr><td class="month-name">${MONTH_NAMES[month]} ${year}</td><td colspan="12" style="color:var(--ink-soft);font-family:'Inter',sans-serif;font-style:italic;">before tracking started</td></tr>`;
+        return `<tr><td class="month-name">${MONTH_NAMES[month]} ${year}</td><td colspan="9" style="color:var(--ink-soft);font-family:'Inter',sans-serif;font-style:italic;">before tracking started</td></tr>`;
       }
       if (m.wfo > 0 || m.wfhCount > 0 || m.leaveCount > 0 || m.pubHolCount > 0 || m.optHolCount > 0) anyData = true;
       const isCurrent = m.isCurrentMonth;
@@ -1778,15 +1651,12 @@
         <tr class="${isCurrent?'current-row':''}">
           <td class="month-name">${MONTH_NAMES[month]} ${year}${isCurrent?' <span style="color:var(--ink-soft);font-weight:400;font-size:10px;">(current)</span>':''}</td>
           <td>${m.wfoOnly}</td>
-          <td>${m.fieldCount}</td>
-          <td>${m.otherCount}</td>
           <td>${m.wfhCount}</td>
           <td>${m.leaveCount}</td>
           <td>${m.pubHolCount}</td>
           <td>${m.optHolCount}</td>
           <td>${m.totalWorkdays}</td>
-          <td style="color:var(--wfo);font-weight:600;">${totalHrsLabel}</td>
-          <td style="color:var(--ink-soft);">${avgHrsLabel}</td>
+          <td class="${avgMs > 0 && avgMs < 5*3600000 ? 'avg-hrs-low' : ''}" style="${avgMs > 0 && avgMs < 5*3600000 ? '' : 'color:var(--ink-soft);'}">${avgHrsLabel}</td>
           <td><span class="mini-bar-track"><span class="mini-bar-fill" style="width:${pct}%;background:${barColor}"></span></span><span style="font-size:10.5px;color:var(--ink-soft);">${m.wfo}/${m.target}</span></td>
           <td><span class="pill ${pillClass}">${pillLabel}</span></td>
         </tr>
@@ -1794,7 +1664,7 @@
     });
 
     if (!anyData) {
-      tbody.innerHTML = `<tr><td colspan="13"><div class="empty-report">No entries logged yet. Mark a working day on the calendar above to start building your report.</div></td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty-report">No entries logged yet. Mark a working day on the calendar above to start building your report.</div></td></tr>`;
     } else {
       tbody.innerHTML = rows.join('');
     }
@@ -2066,81 +1936,10 @@
     `;
   }
 
-  // ---------- Clock widget ----------
+  // ---------- Clock widget (stub — clock-in/out removed) ----------
   function renderClockWidget(){
-    // Remove any existing widget
     const existing = document.getElementById('clock-widget');
     if (existing) existing.remove();
-
-    if (!timeTrackingEnabled) return; // feature disabled
-
-    const todayEntry = entries[todayKey];
-    const isWFOToday = todayEntry && todayEntry.type === 'WFO';
-    if (!isWFOToday) return; // only show for WFO days
-
-    const sessions = sessionsForDay(todayKey);
-    const clockedIn = isCurrentlyClockedIn(todayKey);
-    const totalMs = totalMsForDay(todayKey);
-    const hasSessions = sessions.length > 0;
-
-    // Build session history rows
-    const histHtml = sessions.map((s, i) => {
-      const inTime = new Date(s.in).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-      const outTime = s.out ? new Date(s.out).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—';
-      const dur = s.out ? formatDuration(s.out - s.in, true) : '';
-      return `<div class="clock-session-row">
-        <span class="clock-sess-num">#${i+1}</span>
-        <span class="clock-sess-in">${inTime}</span>
-        <span class="clock-sess-arrow">→</span>
-        <span class="clock-sess-out">${outTime}</span>
-        ${dur ? `<span class="clock-sess-dur">${dur}</span>` : ''}
-        ${s.out == null ? '<span class="clock-sess-live">LIVE</span>' : ''}
-      </div>`;
-    }).join('');
-
-    const widget = document.createElement('div');
-    widget.id = 'clock-widget';
-    widget.className = `clock-widget ${clockedIn ? 'clocked-in' : ''}`;
-    widget.innerHTML = `
-      <div class="clock-header">
-        <div class="clock-title-row">
-          <span class="clock-icon">${clockedIn ? '🟢' : '🔴'}</span>
-          <span class="clock-title">Office Time · Today</span>
-          <button class="clock-toggle-btn" id="clock-toggle-history" title="Session history">⏱</button>
-        </div>
-        ${clockedIn
-          ? `<div class="clock-elapsed-wrap">
-               <span class="clock-elapsed" id="clock-elapsed">${formatDuration(totalMs, false)}</span>
-               <span class="clock-elapsed-label">elapsed</span>
-             </div>`
-          : hasSessions
-            ? `<div class="clock-total-wrap">
-                 <span class="clock-total">${formatDuration(totalMs, true)}</span>
-                 <span class="clock-elapsed-label">total today</span>
-               </div>`
-            : `<div class="clock-hint">Not clocked in yet</div>`
-        }
-        <button class="${clockedIn ? 'clock-out-btn' : 'clock-in-btn'}" id="clock-action-btn">
-          ${clockedIn ? 'Clock Out' : 'Clock In'}
-        </button>
-      </div>
-      <div class="clock-sessions" id="clock-sessions" style="display:none;">
-        ${hasSessions ? histHtml : '<div class="clock-no-sess">No sessions yet</div>'}
-      </div>
-    `;
-    document.body.appendChild(widget);
-
-    document.getElementById('clock-action-btn').addEventListener('click', () => {
-      if (isCurrentlyClockedIn(todayKey)) clockOut(todayKey);
-      else clockIn(todayKey);
-    });
-    document.getElementById('clock-toggle-history').addEventListener('click', () => {
-      const sess = document.getElementById('clock-sessions');
-      if (sess) sess.style.display = sess.style.display === 'none' ? 'block' : 'none';
-    });
-
-    // Resume tick if still clocked in
-    if (clockedIn) startClockTick();
   }
 
   function renderAll(){
@@ -2226,7 +2025,7 @@
           <table class="report-table">
             <thead>
               <tr>
-                <th>Month</th><th>Office</th><th>Field</th><th>Other</th><th>WFH</th><th>Leave</th><th>Pub&nbsp;Hol</th><th>Opt&nbsp;Hol</th><th>Work&nbsp;days</th><th>Total&nbsp;Hrs</th><th>Avg&nbsp;Hrs/Day</th><th>vs target</th><th>Status</th>
+                <th>Month</th><th>Office</th><th>WFH</th><th>Leave</th><th>Pub&nbsp;Hol</th><th>Opt&nbsp;Hol</th><th>Work&nbsp;days</th><th>Avg&nbsp;Hrs/Day</th><th>vs target</th><th>Status</th>
               </tr>
             </thead>
             <tbody id="report-tbody"></tbody>
